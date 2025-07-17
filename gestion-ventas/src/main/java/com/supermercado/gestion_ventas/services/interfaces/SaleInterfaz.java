@@ -4,7 +4,7 @@ import com.supermercado.gestion_ventas.models.Sale;
 
 public interface SaleInterfaz {
 
-    SaleDTO create(SaleDTO s);
+    SaleDTO registrar(SaleDTO s);         //registrar compra
 
     ///Todo: mapear
     SaleDTO convertirADTO(Sale s);          //metodos para mapear OBJ a DTO

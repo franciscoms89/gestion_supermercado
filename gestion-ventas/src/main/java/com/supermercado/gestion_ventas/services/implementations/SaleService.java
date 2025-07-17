@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SaleService implements SaleInterfaz {
     @Override
-    public SaleDTO create(SaleDTO s) {
+    public SaleDTO registrar(SaleDTO s) {
         return null;
     }
 
