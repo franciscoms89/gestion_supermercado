@@ -4,9 +4,11 @@ import com.supermercado.gestion_ventas.dtos.SaleDTO;
 import com.supermercado.gestion_ventas.dtos.ShopDTO;
 import com.supermercado.gestion_ventas.models.Sale;
 import com.supermercado.gestion_ventas.services.interfaces.ShopInterfaz;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ShopService implements ShopInterfaz {
     @Override
     public List<ShopDTO> listAll() {

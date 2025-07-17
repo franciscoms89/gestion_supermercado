@@ -3,9 +3,11 @@ package com.supermercado.gestion_ventas.services.implementations;
 import com.supermercado.gestion_ventas.dtos.ProductDTO;
 import com.supermercado.gestion_ventas.models.Product;
 import com.supermercado.gestion_ventas.services.interfaces.ProductInterfaz;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ProductService  implements ProductInterfaz {
     @Override
     public List<ProductDTO> listAll() {
