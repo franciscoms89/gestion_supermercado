@@ -20,7 +20,7 @@ public class ProductService  implements ProductInterfaz {
     }
 
     @Override
-    public ProductDTO update(ProductDTO p) {
+    public ProductDTO update(Long id, ProductDTO p) {
         return null;
     }
 

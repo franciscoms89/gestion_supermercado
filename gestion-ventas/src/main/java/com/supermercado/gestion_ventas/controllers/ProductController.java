@@ -1,6 +1,7 @@
 package com.supermercado.gestion_ventas.controllers;
 
 import com.supermercado.gestion_ventas.dtos.ProductDTO;
+import com.supermercado.gestion_ventas.services.interfaces.ProductInterfaz;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,7 +45,7 @@ public class ProductController {
     // DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<List<ProductDTO>> delete(@PathVariable Long id) {
-        List<ProductDTO> list = productService.delete(id);
+        List<ProductDTO> list = productService.deleteProduct(id);
         return ResponseEntity.ok(list);
     }
 }

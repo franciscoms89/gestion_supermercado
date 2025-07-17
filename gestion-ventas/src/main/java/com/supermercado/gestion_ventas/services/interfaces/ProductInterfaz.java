@@ -11,7 +11,7 @@ public interface ProductInterfaz {
 
      ProductDTO create(ProductDTO p);   //crear producto
 
-    ProductDTO update(ProductDTO p);   //crear producto
+    ProductDTO update(Long id, ProductDTO p);   //crear producto
 
     List<ProductDTO> deleteProduct(Long id);                //eliminar producto
 
