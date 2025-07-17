@@ -21,7 +21,7 @@ public class ShopService implements ShopInterfaz {
     }
 
     @Override
-    public ShopDTO update(ShopDTO s) {
+    public ShopDTO update(Long id,ShopDTO s) {
         return null;
     }
 

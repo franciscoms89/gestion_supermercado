@@ -12,7 +12,7 @@ public interface ShopInterfaz {
 
     ShopDTO create(ShopDTO s);   //crear tienda
 
-    ShopDTO update(ShopDTO s);   //actualizar tienda
+    ShopDTO update(Long id,ShopDTO s);   //actualizar tienda
 
     List<ShopDTO> deleteProduct(Long id);                //eliminar tienda
 
