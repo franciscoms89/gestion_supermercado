@@ -20,23 +20,23 @@ public class ProductService  implements ProductInterfaz {
     }
 
     @Override
-    public ProductDTO update(ProductDTO p) {
+    public ProductDTO update(Long id, ProductDTO p) {
         return null;
     }
 
     @Override
-    public List<ProductDTO> deleteProduct(Long id) {
+    public List<ProductDTO> delete(Long id) {
         return List.of();
     }
 
     @Override
-    public ProductDTO convertirADTO(Product p)
+    public ProductDTO convertToDTO(Product p)
     {
         return null;
     }
 
     @Override
-    public Product convertirAOBJ(ProductDTO p) {
+    public Product convertToOBJ(ProductDTO p) {
         return null;
     }
 }

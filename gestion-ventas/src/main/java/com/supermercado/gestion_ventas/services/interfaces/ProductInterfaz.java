@@ -11,16 +11,16 @@ public interface ProductInterfaz {
 
      ProductDTO create(ProductDTO p);   //crear producto
 
-    ProductDTO update(ProductDTO p);   //crear producto
+    ProductDTO update(Long id, ProductDTO p);   //crear producto
 
-    List<ProductDTO> deleteProduct(Long id);                //eliminar producto
+    List<ProductDTO> delete(Long id);                //eliminar producto
 
 
      ///Todo: mapear
-    ProductDTO convertirADTO(Product p);          //metodos para mapear OBJ a DTO
+    ProductDTO convertToDTO(Product p);          //metodos para mapear OBJ a DTO
 
 
-    Product convertirAOBJ(ProductDTO p);              //metodos para mapear DTO a OBJ
+    Product convertToOBJ(ProductDTO p);              //metodos para mapear DTO a OBJ
 
 
 }
