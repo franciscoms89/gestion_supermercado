@@ -17,9 +17,9 @@ public interface ShopInterfaz {
     List<ShopDTO> deleteProduct(Long id);                //eliminar tienda
 
     ///Todo: mapear
-    SaleDTO convertirADTO(Sale s);          //metodos para mapear OBJ a DTO
+    SaleDTO convertToDTO(Sale s);          //metodos para mapear OBJ a DTO
 
-    Sale convertirAOBJ(SaleDTO s);              //metodos para mapear DTO a OBJ
+    Sale converToOBJ(SaleDTO s);              //metodos para mapear DTO a OBJ
 
 
 }

@@ -5,7 +5,6 @@ import com.supermercado.gestion_ventas.dtos.SaleDTO;
 import com.supermercado.gestion_ventas.models.Product;
 import com.supermercado.gestion_ventas.models.Sale;
 import com.supermercado.gestion_ventas.models.Shop;
-import com.supermercado.gestion_ventas.repositories.ProductRepositoryInterfaz;
 import com.supermercado.gestion_ventas.repositories.SaleRepositoryInterfaz;
 import com.supermercado.gestion_ventas.services.interfaces.SaleInterfaz;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +22,13 @@ public class SaleService implements SaleInterfaz {
     SaleRepositoryInterfaz repository;
     @Override
     public SaleDTO registrar(SaleDTO s) {        //registrar venta
-        Sale saleRecover = this.convertirAOBJ(s);
+        Sale saleRecover = this.convertirToOBJ(s);
         Sale saleSave = repository.save(saleRecover);
-        return convertirADTO(saleSave);
+        return convertirToDTO(saleSave);
     }
 
     @Override
-    public SaleDTO convertirADTO(Sale s)
+    public SaleDTO convertirToDTO(Sale s)
     {
 
         List<SaleDTO.SaleDetailsDTO> saleDetails = s.getProducts() == null ? List.of()
@@ -40,7 +39,7 @@ public class SaleService implements SaleInterfaz {
     }
 
     @Override
-    public Sale convertirAOBJ(SaleDTO s) {
+    public Sale convertirToOBJ(SaleDTO s) {
 
         Sale sale = new Sale();
         sale.setId(s.getId());
