@@ -15,5 +15,5 @@ public class ShopDTO {
     private String name;
     private String city;
     private String address;
-    private List<Sale> sales;
+    private List<SaleDTO> sales;
 }
