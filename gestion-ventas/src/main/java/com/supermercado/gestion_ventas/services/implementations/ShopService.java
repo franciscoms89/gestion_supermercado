@@ -34,13 +34,13 @@ public class ShopService implements ShopInterfaz {
     }
 
     @Override
-    public SaleDTO convertToDTO(Sale s)          //metodos para mapear OBJ a DTO
+    public SaleDTO convertToDTO(Shop s)          //metodos para mapear OBJ a DTO
     {
         return null;
     }
 
     @Override
-    public Sale converToOBJ(SaleDTO s) {
-        return new Sale();
+    public Sale converToOBJ(ShopDTO s) {
+        return null;
     }
 }
