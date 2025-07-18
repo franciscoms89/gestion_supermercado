@@ -46,7 +46,8 @@ public class ShopService implements ShopInterfaz {
             shop.setId(id);
             shop.setName(s.getName());
             shop.setCity(s.getCity());
-           // shop.setSales(converToOBJ(s.getSales()).getSales());
+            Shop SaleObj =this.converToOBJ(s);
+            shop.setSales(SaleObj.getSales());
 
 
             //actualizar
