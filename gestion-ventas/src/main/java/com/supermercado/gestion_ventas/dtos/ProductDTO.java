@@ -1,8 +1,12 @@
 package com.supermercado.gestion_ventas.dtos;
 
+import com.supermercado.gestion_ventas.models.Sale;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -12,4 +16,5 @@ public class ProductDTO {
     private String name;
     private double price;
     private String category;
+    private Set<Sale> sales = new HashSet<>();
 }
