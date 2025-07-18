@@ -1,9 +1,9 @@
 package com.supermercado.gestion_ventas.repositories;
 
-import com.supermercado.gestion_ventas.models.Shop;
+import com.supermercado.gestion_ventas.models.Sale;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ShopRepositoryInterface extends JpaRepository<Shop, Long> {
+public interface SaleRepositoryInterfaz extends JpaRepository<Sale, Long> {
 }
