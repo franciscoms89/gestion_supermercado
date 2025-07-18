@@ -5,42 +5,84 @@ import com.supermercado.gestion_ventas.dtos.ShopDTO;
 import com.supermercado.gestion_ventas.models.Sale;
 import com.supermercado.gestion_ventas.models.Shop;
 import com.supermercado.gestion_ventas.repositories.ShopRepositoryInterfaz;
+import com.supermercado.gestion_ventas.services.interfaces.SaleInterfaz;
 import com.supermercado.gestion_ventas.services.interfaces.ShopInterfaz;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ShopService implements ShopInterfaz {
+
+    @Autowired
+    ShopRepositoryInterfaz repository;
+
+    @Autowired
+    SaleInterfaz SI;
+
+
     @Override
     public List<ShopDTO> listAll() {
-        return List.of();
+        List<Shop> shopList = repository.findAll();
+        return shopList.stream().map(this::convertToDTO)
+                .toList();
     }
 
     @Override
     public ShopDTO create(ShopDTO s) {
-        return null;
+        Shop shopRecover = this.converToOBJ(s);
+        Shop shopSave = repository.save(shopRecover);
+        return convertToDTO(shopSave);
     }
 
     @Override
     public ShopDTO update(Long id, ShopDTO s) {
-        return null;
+        Optional<Shop> exist = repository.findById(id);
+        if(exist.isPresent()){
+            Shop shop = new Shop();
+            shop.setId(id);
+            shop.setName(s.getName());
+            shop.setCity(s.getCity());
+           // shop.setSales(converToOBJ(s.getSales()).getSales());
+
+
+            //actualizar
+            Shop shopUpdate = repository.save(shop);
+            return this.convertToDTO(shopUpdate);
+        }
+        else
+        {
+            System.err.println("No se pudo actualizar");
+            return new ShopDTO();
+        }
+
     }
 
     @Override
     public List<ShopDTO> deleteProduct(Long id) {
+
+        try {
+            repository.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("la tienda con id "+id+" no pudo ser eliminado");
+        }
         return List.of();
     }
 
     @Override
-    public SaleDTO convertToDTO(Shop s)          //metodos para mapear OBJ a DTO
+    public ShopDTO convertToDTO(Shop s)          //metodos para mapear OBJ a DTO
     {
-        return null;
+        List<SaleDTO> sales = s.getSales()== null || s.getSales().isEmpty() ? new ArrayList<>() : s.getSales().stream().map(SI::convertirToDTO).toList();
+        return new ShopDTO(s.getId(),s.getName(),s.getCity(),s.getAddress(), sales);
     }
 
     @Override
-    public Sale converToOBJ(ShopDTO s) {
-        return null;
+    public Shop converToOBJ(ShopDTO s) {
+
+        List<Sale> sales = s.getSales()== null || s.getSales().isEmpty() ? new ArrayList<>() : s.getSales().stream().map(SI::convertirToOBJ).toList();
+        return new Shop(s.getId(),s.getName(),s.getCity(),s.getAddress(), sales);
     }
 }
