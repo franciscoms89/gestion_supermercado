@@ -7,7 +7,6 @@ import com.supermercado.gestion_ventas.models.Sale;
 import com.supermercado.gestion_ventas.repositories.ProductRepositoryInterfaz;
 import com.supermercado.gestion_ventas.services.interfaces.ProductInterfaz;
 import com.supermercado.gestion_ventas.services.interfaces.SaleInterfaz;
-import com.supermercado.gestion_ventas.services.interfaces.ShopInterfaz;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +24,6 @@ public class ProductService  implements ProductInterfaz {
 
     //relaciones con otros servicios
     SaleInterfaz sai;
-    ShopInterfaz soi;
 
     @Override
     public List<ProductDTO> listAll() {                         //listar producto
