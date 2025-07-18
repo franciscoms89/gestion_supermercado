@@ -22,7 +22,7 @@ public class SaleService implements SaleInterfaz {
     @Autowired
     SaleRepositoryInterfaz repository;
     @Override
-    public SaleDTO registrar(SaleDTO s) {
+    public SaleDTO registrar(SaleDTO s) {        //registrar venta
         Sale saleRecover = this.convertirAOBJ(s);
         Sale saleSave = repository.save(saleRecover);
         return convertirADTO(saleSave);
