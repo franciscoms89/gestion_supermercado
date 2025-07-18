@@ -16,5 +16,5 @@ public class ProductDTO {
     private String name;
     private double price;
     private String category;
-    private Set<Sale> sales = new HashSet<>();
+    private Set<SaleDTO> sales = new HashSet<>();
 }
