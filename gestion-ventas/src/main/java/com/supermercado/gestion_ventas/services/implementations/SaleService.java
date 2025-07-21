@@ -26,7 +26,7 @@ public class SaleService implements SaleInterfaz {
     @Autowired
     SaleRepositoryInterfaz repository;
     @Override
-    public SaleDTO registrar(SaleDTO s) {        //registrar venta
+    public SaleDTO register(SaleDTO s) {        //registrar venta
 
         Sale saleSave;
         try{
@@ -48,7 +48,7 @@ public class SaleService implements SaleInterfaz {
     }
 
     @Override
-    public List<SaleDTO> listAll() {            //listar compra
+    public List<SaleDTO> listAll(Long shopId, LocalDate saleDate) {            //listar compra
         List<Sale> saleList = repository.findAll();
 
         if(saleList.isEmpty())
@@ -57,31 +57,11 @@ public class SaleService implements SaleInterfaz {
                 HttpStatus.NO_CONTENT.value(),
                 LocalDate.now());
         }
-        return saleList.stream().map(this::convertToDTO)
+        return saleList.stream()
+                .filter(sale -> shopId == null || sale.getShop().getId().equals(shopId))
+                .filter(sale -> saleDate == null || sale.getSaleDate().equals(saleDate))
+                .map(this::convertToDTO)
                 .toList();
-    }
-
-    @Override
-    public Response update(Long id, SaleDTO s) {      //actualizar compra
-        Optional<Sale> exist = repository.findById(id);
-        if(exist.isPresent())
-        {
-            Sale sale = new Sale();
-            sale.setId(id);
-            sale.setShop(sale.getShop());
-            sale.setSaleDate(sale.getSaleDate());
-            sale.setProducts(sale.getProducts());
-
-            Sale saleUpdate = repository.save(sale);
-
-            return  new Response("Se actualizo correctamente la compra" + id,
-                    HttpStatus.NO_CONTENT.value(),
-                    LocalDate.now());
-        }else {
-            return  new Response("No se pudo actualizar la compra" + id,
-                    HttpStatus.NO_CONTENT.value(),
-                    LocalDate.now());
-        }
     }
 
     @Override
