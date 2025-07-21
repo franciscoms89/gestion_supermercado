@@ -1,6 +1,7 @@
 package com.supermercado.gestion_ventas.controllers;
 
 import com.supermercado.gestion_ventas.dtos.ProductDTO;
+import com.supermercado.gestion_ventas.response.Response;
 import com.supermercado.gestion_ventas.services.interfaces.ProductInterfaz;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,8 @@ public class ProductController {
 
     // PUT - Actualizar un producto existente
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> update(@PathVariable Long id, @RequestBody ProductDTO productToUpdate) {
-        ProductDTO productDTO = productService.update(id, productToUpdate);
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody ProductDTO productToUpdate) {
+        Response productDTO = productService.update(id, productToUpdate);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(productDTO);
     }
 
