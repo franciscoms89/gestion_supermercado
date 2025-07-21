@@ -16,7 +16,7 @@ public interface ProductInterfaz {
     List<ProductDTO> delete(Long id);                //eliminar producto
 
 
-     ///Todo: mapear
+     ///Todo: mapear objectos
     ProductDTO convertToDTO(Product p);          //metodos para mapear OBJ a DTO
 
 

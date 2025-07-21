@@ -27,6 +27,9 @@ public class SaleService implements SaleInterfaz {
         return convertirToDTO(saleSave);
     }
 
+
+
+    ///Todo: mapear objectos
     @Override
     public SaleDTO convertirToDTO(Sale s)
     {

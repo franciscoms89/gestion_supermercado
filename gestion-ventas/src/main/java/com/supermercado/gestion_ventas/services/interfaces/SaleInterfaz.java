@@ -6,7 +6,7 @@ public interface SaleInterfaz {
 
     SaleDTO registrar(SaleDTO s);         //registrar compra
 
-    ///Todo: mapear
+    ///Todo: mapear objectos
     SaleDTO convertirToDTO(Sale s);          //metodos para mapear OBJ a DTO
 
     Sale convertirToOBJ(SaleDTO s);              //metodos para mapear DTO a OBJ

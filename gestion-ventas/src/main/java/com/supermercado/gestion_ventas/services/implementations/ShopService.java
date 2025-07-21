@@ -73,6 +73,9 @@ public class ShopService implements ShopInterfaz {
         return List.of();
     }
 
+
+
+    ///Todo: mapear objectos
     @Override
     public ShopDTO convertToDTO(Shop s)          //metodos para mapear OBJ a DTO
     {
