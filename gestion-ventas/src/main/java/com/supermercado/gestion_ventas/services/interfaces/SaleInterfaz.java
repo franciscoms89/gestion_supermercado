@@ -1,6 +1,7 @@
 package com.supermercado.gestion_ventas.services.interfaces;
 import com.supermercado.gestion_ventas.dtos.SaleDTO;
 import com.supermercado.gestion_ventas.models.Sale;
+import com.supermercado.gestion_ventas.response.Response;
 
 import java.util.List;
 
@@ -10,9 +11,9 @@ public interface SaleInterfaz {
 
     List<SaleDTO> listAll();                //listar compra
 
-    SaleDTO update(Long id, SaleDTO s);   //actualizar compra
+    Response update(Long id, SaleDTO s);   //actualizar compra
 
-    List<SaleDTO> delete(Long id);                //eliminar compra
+    Response delete(Long id);                //eliminar compra
 
     
     

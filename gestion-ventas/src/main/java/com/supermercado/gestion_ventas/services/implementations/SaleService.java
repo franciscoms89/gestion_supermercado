@@ -7,10 +7,13 @@ import com.supermercado.gestion_ventas.models.Product;
 import com.supermercado.gestion_ventas.models.Sale;
 import com.supermercado.gestion_ventas.models.Shop;
 import com.supermercado.gestion_ventas.repositories.SaleRepositoryInterfaz;
+import com.supermercado.gestion_ventas.response.Response;
 import com.supermercado.gestion_ventas.services.interfaces.SaleInterfaz;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -24,20 +27,42 @@ public class SaleService implements SaleInterfaz {
     SaleRepositoryInterfaz repository;
     @Override
     public SaleDTO registrar(SaleDTO s) {        //registrar venta
-        Sale saleRecover = this.convertToOBJ(s);
-        Sale saleSave = repository.save(saleRecover);
+
+        Sale saleSave;
+        try{
+            Sale saleRecover = this.convertToOBJ(s);
+
+            saleSave = repository.save(saleRecover);
+
+            new Response("La compra se registro correctamente",
+                    HttpStatus.NO_CONTENT.value(),
+                    LocalDate.now());
+        } catch (Exception e) {
+            new Response("No se pudo registrar la compra",
+                    HttpStatus.NO_CONTENT.value(),
+                    LocalDate.now());
+            throw new RuntimeException(e);
+        }
+
         return convertToDTO(saleSave);
     }
 
     @Override
     public List<SaleDTO> listAll() {            //listar compra
         List<Sale> saleList = repository.findAll();
+
+        if(saleList.isEmpty())
+        {
+            new Response("No tienes compras registradas",
+                HttpStatus.NO_CONTENT.value(),
+                LocalDate.now());
+        }
         return saleList.stream().map(this::convertToDTO)
                 .toList();
     }
 
     @Override
-    public SaleDTO update(Long id, SaleDTO s) {      //actualizar compra
+    public Response update(Long id, SaleDTO s) {      //actualizar compra
         Optional<Sale> exist = repository.findById(id);
         if(exist.isPresent())
         {
@@ -48,21 +73,30 @@ public class SaleService implements SaleInterfaz {
             sale.setProducts(sale.getProducts());
 
             Sale saleUpdate = repository.save(sale);
-            return this.convertToDTO(saleUpdate);
+
+            return  new Response("Se actualizo correctamente la compra" + id,
+                    HttpStatus.NO_CONTENT.value(),
+                    LocalDate.now());
         }else {
-            System.err.println("no se pudo actualizar");
-            return  new SaleDTO();
+            return  new Response("No se pudo actualizar la compra" + id,
+                    HttpStatus.NO_CONTENT.value(),
+                    LocalDate.now());
         }
     }
 
     @Override
-    public List<SaleDTO> delete(Long id) {
+    public Response delete(Long id) {
         try {
             repository.deleteById(id);
+            return  new Response("No se pudo eliminar la Compra" + id,
+                    HttpStatus.NO_CONTENT.value(),
+                    LocalDate.now());
         } catch (Exception e) {
-            throw new RuntimeException(" la sale con id "+id+" no pudo ser eliminada");
+            return new Response("No se pudo eliminar la Compra" + id,
+                    HttpStatus.NO_CONTENT.value(),
+                    LocalDate.now());
         }
-        return List.of();
+
     }
 
 
