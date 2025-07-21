@@ -2,7 +2,7 @@ package com.supermercado.gestion_ventas.controllers;
 
 import com.supermercado.gestion_ventas.dtos.ProductDTO;
 import com.supermercado.gestion_ventas.services.interfaces.ProductInterfaz;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,31 +19,31 @@ public class ProductController {
     @Autowired
     ProductInterfaz productService;
 
-    // GET
+    // GET - Obtener todos los productos en forma de lista
     @GetMapping
     public ResponseEntity<List<ProductDTO>> listAll() {
         List<ProductDTO> list = productService.listAll();
         return ResponseEntity.ok(list);
     }
 
-    // POST
-    @PostMapping("/{id}")
+    // POST - Crear un nuevo producto
+    @PostMapping
     public ResponseEntity<ProductDTO> create(@RequestBody ProductDTO product) {
         ProductDTO productCreated = productService.create(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(productCreated);
     }
 
-    // PUT
+    // PUT - Actualizar un producto existente
     @PutMapping("/{id}")
     public ResponseEntity<ProductDTO> update(@PathVariable Long id, @RequestBody ProductDTO productToUpdate) {
         ProductDTO productDTO = productService.update(id, productToUpdate);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(productDTO);
     }
 
-    // DELETE
+    // DELETE - Eliminar un producto
     @DeleteMapping("/{id}")
-    public ResponseEntity<List<ProductDTO>> delete(@PathVariable Long id) {
-        List<ProductDTO> list = productService.delete(id);
-        return ResponseEntity.ok(list);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        productService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
