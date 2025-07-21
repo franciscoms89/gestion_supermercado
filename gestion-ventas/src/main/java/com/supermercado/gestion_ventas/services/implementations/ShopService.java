@@ -63,7 +63,7 @@ public class ShopService implements ShopInterfaz {
     }
 
     @Override
-    public List<ShopDTO> deleteProduct(Long id) {
+    public List<ShopDTO> delete(Long id) {
 
         try {
             repository.deleteById(id);
@@ -79,14 +79,14 @@ public class ShopService implements ShopInterfaz {
     @Override
     public ShopDTO convertToDTO(Shop s)          //metodos para mapear OBJ a DTO
     {
-        List<SaleDTO> sales = s.getSales()== null || s.getSales().isEmpty() ? new ArrayList<>() : s.getSales().stream().map(SI::convertirToDTO).toList();
+        List<SaleDTO> sales = s.getSales()== null || s.getSales().isEmpty() ? new ArrayList<>() : s.getSales().stream().map(SI::convertToDTO).toList();
         return new ShopDTO(s.getId(),s.getName(),s.getCity(),s.getAddress(), sales);
     }
 
     @Override
     public Shop converToOBJ(ShopDTO s) {
 
-        List<Sale> sales = s.getSales()== null || s.getSales().isEmpty() ? new ArrayList<>() : s.getSales().stream().map(SI::convertirToOBJ).toList();
+        List<Sale> sales = s.getSales()== null || s.getSales().isEmpty() ? new ArrayList<>() : s.getSales().stream().map(SI::convertToOBJ).toList();
         return new Shop(s.getId(),s.getName(),s.getCity(),s.getAddress(), sales);
     }
 }
