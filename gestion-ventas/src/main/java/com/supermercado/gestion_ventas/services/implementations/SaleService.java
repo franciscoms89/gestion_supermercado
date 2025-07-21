@@ -7,13 +7,16 @@ import com.supermercado.gestion_ventas.models.Product;
 import com.supermercado.gestion_ventas.models.Sale;
 import com.supermercado.gestion_ventas.models.Shop;
 import com.supermercado.gestion_ventas.repositories.SaleRepositoryInterfaz;
+import com.supermercado.gestion_ventas.response.Response;
 import com.supermercado.gestion_ventas.services.interfaces.SaleInterfaz;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,31 +25,78 @@ public class SaleService implements SaleInterfaz {
 
     @Autowired
     SaleRepositoryInterfaz repository;
-
     @Override
-    public SaleDTO register(SaleDTO s) {        //registrar venta
-        Sale saleRecover = this.convertToOBJ(s);
-        Sale saleSave = repository.save(saleRecover);
+    public SaleDTO registrar(SaleDTO s) {        //registrar venta
+
+        Sale saleSave;
+        try{
+            Sale saleRecover = this.convertToOBJ(s);
+
+            saleSave = repository.save(saleRecover);
+
+            new Response("La compra se registro correctamente",
+                    HttpStatus.NO_CONTENT.value(),
+                    LocalDate.now());
+        } catch (Exception e) {
+            new Response("No se pudo registrar la compra",
+                    HttpStatus.NO_CONTENT.value(),
+                    LocalDate.now());
+            throw new RuntimeException(e);
+        }
+
         return convertToDTO(saleSave);
     }
 
     @Override
-    public List<SaleDTO> listAll(Long shopId, LocalDate saleDate) {            //listar compra
+    public List<SaleDTO> listAll() {            //listar compra
         List<Sale> saleList = repository.findAll();
-        return saleList.stream()
-                .filter(sale -> shopId == null || sale.getShop().getId().equals(shopId))
-                .filter(sale -> saleDate == null || sale.getSaleDate().equals(saleDate))
-                .map(this::convertToDTO)
+
+        if(saleList.isEmpty())
+        {
+            new Response("No tienes compras registradas",
+                HttpStatus.NO_CONTENT.value(),
+                LocalDate.now());
+        }
+        return saleList.stream().map(this::convertToDTO)
                 .toList();
     }
 
     @Override
-    public void delete(Long id) {
+    public Response update(Long id, SaleDTO s) {      //actualizar compra
+        Optional<Sale> exist = repository.findById(id);
+        if(exist.isPresent())
+        {
+            Sale sale = new Sale();
+            sale.setId(id);
+            sale.setShop(sale.getShop());
+            sale.setSaleDate(sale.getSaleDate());
+            sale.setProducts(sale.getProducts());
+
+            Sale saleUpdate = repository.save(sale);
+
+            return  new Response("Se actualizo correctamente la compra" + id,
+                    HttpStatus.NO_CONTENT.value(),
+                    LocalDate.now());
+        }else {
+            return  new Response("No se pudo actualizar la compra" + id,
+                    HttpStatus.NO_CONTENT.value(),
+                    LocalDate.now());
+        }
+    }
+
+    @Override
+    public Response delete(Long id) {
         try {
             repository.deleteById(id);
+            return  new Response("No se pudo eliminar la Compra" + id,
+                    HttpStatus.NO_CONTENT.value(),
+                    LocalDate.now());
         } catch (Exception e) {
-            throw new RuntimeException(" la sale con id "+id+" no pudo ser eliminada");
+            return new Response("No se pudo eliminar la Compra" + id,
+                    HttpStatus.NO_CONTENT.value(),
+                    LocalDate.now());
         }
+
     }
 
 
