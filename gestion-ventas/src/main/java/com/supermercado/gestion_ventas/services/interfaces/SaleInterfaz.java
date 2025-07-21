@@ -3,21 +3,18 @@ import com.supermercado.gestion_ventas.dtos.SaleDTO;
 import com.supermercado.gestion_ventas.models.Sale;
 import com.supermercado.gestion_ventas.response.Response;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface SaleInterfaz {
 
-    SaleDTO registrar(SaleDTO s);         //registrar compra
+    SaleDTO register(SaleDTO s);         //registrar compra
 
-    List<SaleDTO> listAll();                //listar compra
-
-    Response update(Long id, SaleDTO s);   //actualizar compra
+    List<SaleDTO> listAll(Long shopId, LocalDate saleDate);                //listar compra
 
     Response delete(Long id);                //eliminar compra
 
-    
-    
-    
+
     
     ///Todo: mapear objectos
     SaleDTO convertToDTO(Sale s);          //metodos para mapear OBJ a DTO
