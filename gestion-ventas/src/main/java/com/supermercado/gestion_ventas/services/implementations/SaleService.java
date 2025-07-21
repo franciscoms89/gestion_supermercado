@@ -1,6 +1,7 @@
 package com.supermercado.gestion_ventas.services.implementations;
 
 
+
 import com.supermercado.gestion_ventas.dtos.SaleDTO;
 import com.supermercado.gestion_ventas.models.Product;
 import com.supermercado.gestion_ventas.models.Sale;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,41 @@ public class SaleService implements SaleInterfaz {
         return convertToDTO(saleSave);
     }
 
+    @Override
+    public List<SaleDTO> listAll() {            //listar compra
+        List<Sale> saleList = repository.findAll();
+        return saleList.stream().map(this::convertToDTO)
+                .toList();
+    }
+
+    @Override
+    public SaleDTO update(Long id, SaleDTO s) {      //actualizar compra
+        Optional<Sale> exist = repository.findById(id);
+        if(exist.isPresent())
+        {
+            Sale sale = new Sale();
+            sale.setId(id);
+            sale.setShop(sale.getShop());
+            sale.setSaleDate(sale.getSaleDate());
+            sale.setProducts(sale.getProducts());
+
+            Sale saleUpdate = repository.save(sale);
+            return this.convertToDTO(saleUpdate);
+        }else {
+            System.err.println("no se pudo actualizar");
+            return  new SaleDTO();
+        }
+    }
+
+    @Override
+    public List<SaleDTO> delete(Long id) {
+        try {
+            repository.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException(" la sale con id "+id+" no pudo ser eliminada");
+        }
+        return List.of();
+    }
 
 
     ///Todo: mapear objectos
