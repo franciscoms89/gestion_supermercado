@@ -5,11 +5,14 @@ import com.supermercado.gestion_ventas.dtos.ShopDTO;
 import com.supermercado.gestion_ventas.models.Sale;
 import com.supermercado.gestion_ventas.models.Shop;
 import com.supermercado.gestion_ventas.repositories.ShopRepositoryInterfaz;
+import com.supermercado.gestion_ventas.response.Response;
 import com.supermercado.gestion_ventas.services.interfaces.SaleInterfaz;
 import com.supermercado.gestion_ventas.services.interfaces.ShopInterfaz;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,19 +30,43 @@ public class ShopService implements ShopInterfaz {
     @Override
     public List<ShopDTO> listAll() {
         List<Shop> shopList = repository.findAll();
+
+        if(shopList.isEmpty())
+        {
+            new Response("No tienes tiendas registradas",
+                    HttpStatus.NO_CONTENT.value(),
+                    LocalDate.now());
+        }
         return shopList.stream().map(this::convertToDTO)
                 .toList();
     }
 
     @Override
     public ShopDTO create(ShopDTO s) {
-        Shop shopRecover = this.converToOBJ(s);
-        Shop shopSave = repository.save(shopRecover);
-        return convertToDTO(shopSave);
+
+
+        try{
+            Shop shopRecover = this.converToOBJ(s);
+            Shop shopSave = repository.save(shopRecover);
+
+            new Response("Se actualizo correctamente la  tienda",
+                    HttpStatus.ACCEPTED.value(),
+                    LocalDate.now());
+
+            return convertToDTO(shopSave);
+
+
+        } catch (Exception e) {
+            new Response("No se pudo registrar la tienda",
+                    HttpStatus.NO_CONTENT.value(),
+                    LocalDate.now());
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
-    public ShopDTO update(Long id, ShopDTO s) {
+    public Response update(Long id, ShopDTO s) {
         Optional<Shop> exist = repository.findById(id);
         if(exist.isPresent()){
             Shop shop = new Shop();
@@ -52,25 +79,35 @@ public class ShopService implements ShopInterfaz {
 
             //actualizar
             Shop shopUpdate = repository.save(shop);
-            return this.convertToDTO(shopUpdate);
+            return  new Response("Se actualizo correctamente la tienda" + id,
+                    HttpStatus.ACCEPTED.value(),
+                    LocalDate.now());
+
         }
         else
         {
             System.err.println("No se pudo actualizar");
-            return new ShopDTO();
+            new Response("No se pudo actualizar la tienda",
+                    HttpStatus.NO_CONTENT.value(),
+                    LocalDate.now());
         }
-
+       return  null;
     }
 
     @Override
-    public List<ShopDTO> delete(Long id) {
+    public Response delete(Long id) {
 
         try {
             repository.deleteById(id);
+            return new Response("se elimino la Compra" + id,
+                    HttpStatus.ACCEPTED.value(),
+                    LocalDate.now());
         } catch (Exception e) {
-            throw new RuntimeException("la tienda con id "+id+" no pudo ser eliminado");
+            return new Response("no se pudo eliminar la compra" + id,
+                    HttpStatus.NO_CONTENT.value(),
+                    LocalDate.now());
         }
-        return List.of();
+
     }
 
 
