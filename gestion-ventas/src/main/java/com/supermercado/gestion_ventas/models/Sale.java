@@ -16,7 +16,7 @@ public class Sale {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne // Relación: Muchas Ventas pertenecen a una Sucursal
     @JoinColumn(name = "shop_id", nullable = false)

@@ -11,9 +11,9 @@ import com.supermercado.gestion_ventas.services.interfaces.SaleInterfaz;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,47 +22,31 @@ public class SaleService implements SaleInterfaz {
 
     @Autowired
     SaleRepositoryInterfaz repository;
+
     @Override
-    public SaleDTO registrar(SaleDTO s) {        //registrar venta
+    public SaleDTO register(SaleDTO s) {        //registrar venta
         Sale saleRecover = this.convertToOBJ(s);
         Sale saleSave = repository.save(saleRecover);
         return convertToDTO(saleSave);
     }
 
     @Override
-    public List<SaleDTO> listAll() {            //listar compra
+    public List<SaleDTO> listAll(Long shopId, LocalDate saleDate) {            //listar compra
         List<Sale> saleList = repository.findAll();
-        return saleList.stream().map(this::convertToDTO)
+        return saleList.stream()
+                .filter(sale -> shopId == null || sale.getShop().getId().equals(shopId))
+                .filter(sale -> saleDate == null || sale.getSaleDate().equals(saleDate))
+                .map(this::convertToDTO)
                 .toList();
     }
 
     @Override
-    public SaleDTO update(Long id, SaleDTO s) {      //actualizar compra
-        Optional<Sale> exist = repository.findById(id);
-        if(exist.isPresent())
-        {
-            Sale sale = new Sale();
-            sale.setId(id);
-            sale.setShop(sale.getShop());
-            sale.setSaleDate(sale.getSaleDate());
-            sale.setProducts(sale.getProducts());
-
-            Sale saleUpdate = repository.save(sale);
-            return this.convertToDTO(saleUpdate);
-        }else {
-            System.err.println("no se pudo actualizar");
-            return  new SaleDTO();
-        }
-    }
-
-    @Override
-    public List<SaleDTO> delete(Long id) {
+    public void delete(Long id) {
         try {
             repository.deleteById(id);
         } catch (Exception e) {
             throw new RuntimeException(" la sale con id "+id+" no pudo ser eliminada");
         }
-        return List.of();
     }
 
 
