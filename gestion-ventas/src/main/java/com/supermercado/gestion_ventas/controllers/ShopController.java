@@ -1,6 +1,7 @@
 package com.supermercado.gestion_ventas.controllers;
 
 import com.supermercado.gestion_ventas.dtos.ShopDTO;
+import com.supermercado.gestion_ventas.response.Response;
 import com.supermercado.gestion_ventas.services.interfaces.ShopInterfaz;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,8 @@ public class ShopController {
 
     // PUT - Actualizar una sucursal existente
     @PutMapping("/{id}")
-    public ResponseEntity<ShopDTO> update(@PathVariable Long id, @RequestBody ShopDTO shopToUpdate) {
-        ShopDTO shopDTO = shopService.update(id, shopToUpdate);
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody ShopDTO shopToUpdate) {
+        Response shopDTO = shopService.update(id, shopToUpdate);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(shopDTO);
     }
 
