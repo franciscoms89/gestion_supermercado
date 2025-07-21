@@ -11,10 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/productos")
 public class ProductController {
-
-    // Todo: Todos los nombres de las funciones están sujetos a cambios
 
     // IoC
 
@@ -22,7 +20,7 @@ public class ProductController {
     ProductInterfaz productService;
 
     // GET
-    @GetMapping("/productos")
+    @GetMapping
     public ResponseEntity<List<ProductDTO>> listAll() {
         List<ProductDTO> list = productService.listAll();
         return ResponseEntity.ok(list);
@@ -31,8 +29,8 @@ public class ProductController {
     // POST
     @PostMapping("/{id}")
     public ResponseEntity<ProductDTO> create(@RequestBody ProductDTO product) {
-        ProductDTO productoCreated = productService.create(product);
-        return ResponseEntity.status(HttpStatus.CREATED).body(productoCreated);
+        ProductDTO productCreated = productService.create(product);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productCreated);
     }
 
     // PUT

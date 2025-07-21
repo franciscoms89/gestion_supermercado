@@ -15,7 +15,7 @@ public interface ShopInterfaz {
 
     ShopDTO update(Long id,ShopDTO s);   //actualizar tienda
 
-    List<ShopDTO> deleteProduct(Long id);                //eliminar tienda
+    List<ShopDTO> delete(Long id);                //eliminar tienda
 
     ///Todo: mapear objectos
     ShopDTO convertToDTO(Shop s);          //metodos para mapear OBJ a DTO
