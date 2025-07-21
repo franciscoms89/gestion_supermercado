@@ -22,16 +22,16 @@ public class SaleService implements SaleInterfaz {
     SaleRepositoryInterfaz repository;
     @Override
     public SaleDTO registrar(SaleDTO s) {        //registrar venta
-        Sale saleRecover = this.convertirToOBJ(s);
+        Sale saleRecover = this.convertToOBJ(s);
         Sale saleSave = repository.save(saleRecover);
-        return convertirToDTO(saleSave);
+        return convertToDTO(saleSave);
     }
 
 
 
     ///Todo: mapear objectos
     @Override
-    public SaleDTO convertirToDTO(Sale s)
+    public SaleDTO convertToDTO(Sale s)          //metodos para mapear OBJ a DTO
     {
 
         List<SaleDTO.SaleDetailsDTO> saleDetails = s.getProducts() == null ? List.of()
@@ -42,8 +42,8 @@ public class SaleService implements SaleInterfaz {
     }
 
     @Override
-    public Sale convertirToOBJ(SaleDTO s) {
-
+    public Sale convertToOBJ(SaleDTO s) {  //metodos para mapear DTO a OBJ
+    
         Sale sale = new Sale();
         sale.setId(s.getId());
 

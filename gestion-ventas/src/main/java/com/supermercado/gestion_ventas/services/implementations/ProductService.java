@@ -76,14 +76,14 @@ public class ProductService  implements ProductInterfaz {
     @Override
     public ProductDTO convertToDTO(Product p)          //metodos para mapear OBJ a DTO
     {
-        Set<SaleDTO> sales = p.getSales() == null || p.getSales().isEmpty() ? new HashSet<>() : p.getSales().stream().map(sai::convertirToDTO).collect(Collectors.toSet());
+        Set<SaleDTO> sales = p.getSales() == null || p.getSales().isEmpty() ? new HashSet<>() : p.getSales().stream().map(sai::convertToDTO).collect(Collectors.toSet());
         return new ProductDTO(p.getId(),p.getName(),p.getPrice(), p.getCategory(),sales);
     }
 
     @Override
     public Product convertToOBJ(ProductDTO p)             //metodos para mapear DTO a OBJ
     {
-        Set<Sale> sales = p.getSales() == null || p.getSales().isEmpty() ? new HashSet<>() : p.getSales().stream().map(sai::convertirToOBJ).collect(Collectors.toSet());
+        Set<Sale> sales = p.getSales() == null || p.getSales().isEmpty() ? new HashSet<>() : p.getSales().stream().map(sai::convertToOBJ).collect(Collectors.toSet());
         return new Product(p.getId(), p.getName(), p.getPrice(), p.getCategory(), sales);
     }
 }
