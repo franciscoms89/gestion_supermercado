@@ -2,7 +2,7 @@ package com.supermercado.gestion_ventas.controllers;
 
 import com.supermercado.gestion_ventas.dtos.ShopDTO;
 import com.supermercado.gestion_ventas.services.interfaces.ShopInterfaz;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,31 +19,31 @@ public class ShopController {
     @Autowired
     ShopInterfaz shopService;
 
-    // GET
+    // GET - Obtener todas las sucursales en forma de lista
     @GetMapping
     public ResponseEntity<List<ShopDTO>> listAll() {
         List<ShopDTO> list = shopService.listAll();
         return ResponseEntity.ok(list);
     }
 
-    // POST
-    @PostMapping("/{id}")
+    // POST - Crear una nueva sucursal
+    @PostMapping
     public ResponseEntity<ShopDTO> create(@RequestBody ShopDTO shop) {
         ShopDTO shopCreated = shopService.create(shop);
         return ResponseEntity.status(HttpStatus.CREATED).body(shopCreated);
     }
 
-    // PUT
+    // PUT - Actualizar una sucursal existente
     @PutMapping("/{id}")
     public ResponseEntity<ShopDTO> update(@PathVariable Long id, @RequestBody ShopDTO shopToUpdate) {
         ShopDTO shopDTO = shopService.update(id, shopToUpdate);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(shopDTO);
     }
 
-    // DELETE
+    // DELETE - Eliminar una sucursal
     @DeleteMapping("/{id}")
-    public ResponseEntity<List<ShopDTO>> delete(@PathVariable Long id) {
-        List<ShopDTO> list = shopService.delete(id);
-        return ResponseEntity.ok(list);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        shopService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
