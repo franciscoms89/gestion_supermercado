@@ -2,6 +2,7 @@ package com.supermercado.gestion_ventas.services.interfaces;
 
 import com.supermercado.gestion_ventas.dtos.ProductDTO;
 import com.supermercado.gestion_ventas.models.Product;
+import com.supermercado.gestion_ventas.response.Response;
 
 import java.util.List;
 
@@ -11,9 +12,9 @@ public interface ProductInterfaz {
 
      ProductDTO create(ProductDTO p);   //crear producto
 
-    ProductDTO update(Long id, ProductDTO p);   //crear producto
+    Response update(Long id, ProductDTO p);   //crear producto
 
-    List<ProductDTO> delete(Long id);                //eliminar producto
+    Response delete(Long id);                //eliminar producto
 
 
      ///Todo: mapear objectos
