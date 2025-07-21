@@ -28,15 +28,15 @@ public class SaleService implements SaleInterfaz {
     @Override
     public SaleDTO register(SaleDTO s) {        //registrar venta
 
-        Sale saleSave;
         try{
             Sale saleRecover = this.convertToOBJ(s);
 
-            saleSave = repository.save(saleRecover);
+             Sale saleSave = repository.save(saleRecover);
 
             new Response("La compra se registro correctamente",
-                    HttpStatus.NO_CONTENT.value(),
+                    HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
+            return convertToDTO(saleSave);
         } catch (Exception e) {
             new Response("No se pudo registrar la compra",
                     HttpStatus.NO_CONTENT.value(),
@@ -44,7 +44,7 @@ public class SaleService implements SaleInterfaz {
             throw new RuntimeException(e);
         }
 
-        return convertToDTO(saleSave);
+
     }
 
     @Override
@@ -53,10 +53,12 @@ public class SaleService implements SaleInterfaz {
 
         if(saleList.isEmpty())
         {
-            new Response("No tienes compras registradas",
-                HttpStatus.NO_CONTENT.value(),
-                LocalDate.now());
+            new Response("No tienes ofertas",
+                    HttpStatus.NO_CONTENT.value(),
+                    LocalDate.now());
         }
+
+
         return saleList.stream()
                 .filter(sale -> shopId == null || sale.getShop().getId().equals(shopId))
                 .filter(sale -> saleDate == null || sale.getSaleDate().equals(saleDate))
@@ -68,8 +70,8 @@ public class SaleService implements SaleInterfaz {
     public Response delete(Long id) {
         try {
             repository.deleteById(id);
-            return  new Response("No se pudo eliminar la Compra" + id,
-                    HttpStatus.NO_CONTENT.value(),
+            return  new Response("se elimino la Compra" + id,
+                    HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
         } catch (Exception e) {
             return new Response("No se pudo eliminar la Compra" + id,
