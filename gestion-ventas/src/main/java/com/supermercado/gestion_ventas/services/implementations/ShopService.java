@@ -20,6 +20,7 @@ import java.util.Optional;
 @Service
 public class ShopService implements ShopInterfaz {
 
+    //relaciones con otros servicios
     @Autowired
     ShopRepositoryInterfaz repository;
 
@@ -28,7 +29,7 @@ public class ShopService implements ShopInterfaz {
 
 
     @Override
-    public List<ShopDTO> listAll() {
+    public List<ShopDTO> listAll() {          //listar tiendas
         List<Shop> shopList = repository.findAll();
 
         if(shopList.isEmpty())
@@ -42,14 +43,14 @@ public class ShopService implements ShopInterfaz {
     }
 
     @Override
-    public ShopDTO create(ShopDTO s) {
+    public ShopDTO create(ShopDTO s) {          //crear tienda
 
 
         try{
             Shop shopRecover = this.converToOBJ(s);
             Shop shopSave = repository.save(shopRecover);
 
-            new Response("Se actualizo correctamente la  tienda",
+            new Response("Se creo correctamente la  tienda",
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
 
@@ -57,7 +58,7 @@ public class ShopService implements ShopInterfaz {
 
 
         } catch (Exception e) {
-            new Response("No se pudo registrar la tienda",
+            new Response("No se pudo crear la tienda",
                     HttpStatus.NO_CONTENT.value(),
                     LocalDate.now());
             throw new RuntimeException(e);
@@ -66,7 +67,7 @@ public class ShopService implements ShopInterfaz {
     }
 
     @Override
-    public Response update(Long id, ShopDTO s) {
+    public Response update(Long id, ShopDTO s) {             //actualizar tienda
         Optional<Shop> exist = repository.findById(id);
         if(exist.isPresent()){
             Shop shop = new Shop();
@@ -95,15 +96,15 @@ public class ShopService implements ShopInterfaz {
     }
 
     @Override
-    public Response delete(Long id) {
+    public Response delete(Long id) {   //eliminar tienda
 
         try {
             repository.deleteById(id);
-            return new Response("se elimino la Compra" + id,
+            return new Response("se elimino la tienda" + id,
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
         } catch (Exception e) {
-            return new Response("no se pudo eliminar la compra" + id,
+            return new Response("no se pudo eliminar la tienda" + id,
                     HttpStatus.NO_CONTENT.value(),
                     LocalDate.now());
         }

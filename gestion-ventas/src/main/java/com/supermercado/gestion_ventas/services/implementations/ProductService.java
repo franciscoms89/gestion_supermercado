@@ -29,8 +29,8 @@ public class ProductService  implements ProductInterfaz {
     SaleInterfaz sai;
 
     @Override
-    public List<ProductDTO> listAll() {
-        //listar producto
+    public List<ProductDTO> listAll() {//listar producto
+
         List<Product> productList = repository.findAll();
 
         if(productList.isEmpty())
@@ -92,7 +92,7 @@ public class ProductService  implements ProductInterfaz {
     }
 
     @Override
-    public Response delete(Long id) {
+    public Response delete(Long id) {             //borrar producto
 
         try {
             repository.deleteById(id);

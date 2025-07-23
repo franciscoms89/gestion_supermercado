@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @Service
 public class SaleService implements SaleInterfaz {
 
+    //relaciones con otros servicios
     @Autowired
     SaleRepositoryInterfaz repository;
     @Override
@@ -53,7 +54,7 @@ public class SaleService implements SaleInterfaz {
 
         if(saleList.isEmpty())
         {
-            new Response("No tienes ofertas",
+            new Response("No tienes ninguna compra",
                     HttpStatus.NO_CONTENT.value(),
                     LocalDate.now());
         }
@@ -67,7 +68,7 @@ public class SaleService implements SaleInterfaz {
     }
 
     @Override
-    public Response delete(Long id) {
+    public Response delete(Long id) {                       //borrar compra
         try {
             repository.deleteById(id);
             return  new Response("se elimino la Compra" + id,
