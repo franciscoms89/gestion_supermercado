@@ -43,8 +43,8 @@ public class ProductController {
 
     // DELETE - Eliminar un producto
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        productService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        Response response = productService.delete(id);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 }
