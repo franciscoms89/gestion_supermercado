@@ -117,7 +117,7 @@ public class ShopService implements ShopInterfaz {
     @Override
     public ShopDTO convertToDTO(Shop s)          //metodos para mapear OBJ a DTO
     {
-        List<SaleDTO> sales = s.getSales()== null || s.getSales().isEmpty() ? new ArrayList<>() : s.getSales().stream().map(SI::convertToDTO).toList();
+        List<SaleDTO> sales = new ArrayList<>();
         return new ShopDTO(s.getId(),s.getName(),s.getCity(),s.getAddress(), sales);
     }
 
