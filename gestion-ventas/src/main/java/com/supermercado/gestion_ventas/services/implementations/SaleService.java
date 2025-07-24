@@ -51,7 +51,6 @@ public class SaleService implements SaleInterfaz {
     @Override
     public List<SaleDTO> listAll(Long shopId, LocalDate saleDate) {            //listar compra
         List<Sale> saleList = repository.findAll();
-        System.out.println(saleList.size());
         if(saleList.isEmpty())
         {
             new Response("No tienes ninguna compra",
