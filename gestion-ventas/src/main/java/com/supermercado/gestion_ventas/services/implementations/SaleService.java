@@ -51,7 +51,7 @@ public class SaleService implements SaleInterfaz {
     @Override
     public List<SaleDTO> listAll(Long shopId, LocalDate saleDate) {            //listar compra
         List<Sale> saleList = repository.findAll();
-
+        System.out.println(saleList.size());
         if(saleList.isEmpty())
         {
             new Response("No tienes ninguna compra",
@@ -60,10 +60,7 @@ public class SaleService implements SaleInterfaz {
         }
 
 
-        return saleList.stream()
-                .filter(sale -> shopId == null || sale.getShop().getId().equals(shopId))
-                .filter(sale -> saleDate == null || sale.getSaleDate().equals(saleDate))
-                .map(this::convertToDTO)
+        return saleList.stream().map(this::convertToDTO)
                 .toList();
     }
 
@@ -88,8 +85,7 @@ public class SaleService implements SaleInterfaz {
     public SaleDTO convertToDTO(Sale s)          //metodos para mapear OBJ a DTO
     {
 
-        List<SaleDTO.SaleDetailsDTO> saleDetails = s.getProducts() == null ? List.of()
-                :s.getProducts().stream().map(product -> new SaleDTO.SaleDetailsDTO(product.getId(), 1)).collect(Collectors.toList());
+        List<SaleDTO.SaleDetailsDTO> saleDetails =  List.of();
         Long shop = s.getShop().getId();
 
         return new SaleDTO(s.getId(),shop,s.getSaleDate(),saleDetails);
