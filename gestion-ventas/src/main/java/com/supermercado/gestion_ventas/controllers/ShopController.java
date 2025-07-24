@@ -43,8 +43,8 @@ public class ShopController {
 
     // DELETE - Eliminar una sucursal
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        shopService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        Response response = shopService.delete(id);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 }
