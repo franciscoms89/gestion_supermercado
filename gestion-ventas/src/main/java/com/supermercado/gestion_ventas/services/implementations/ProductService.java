@@ -113,7 +113,7 @@ public class ProductService  implements ProductInterfaz {
     @Override
     public ProductDTO convertToDTO(Product p)          //metodos para mapear OBJ a DTO
     {
-        Set<SaleDTO> sales = p.getSales() == null || p.getSales().isEmpty() ? new HashSet<>() : p.getSales().stream().map(sai::convertToDTO).collect(Collectors.toSet());
+        Set<SaleDTO> sales = new HashSet<>();
         return new ProductDTO(p.getId(),p.getName(),p.getPrice(), p.getCategory(),sales);
     }
 
