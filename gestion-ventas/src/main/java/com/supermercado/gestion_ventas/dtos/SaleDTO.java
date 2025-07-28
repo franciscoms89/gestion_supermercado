@@ -17,7 +17,9 @@ public class SaleDTO {
     private List<SaleDetailsDTO> saleDetails;
 
 
-    // DTO interno para el desglose de cada producto en la venta
+    // TODO [IMPORTANTE]: Clase interna para los detalles de cada producto en la venta.
+    // Esto es crucial para poder enviar la 'cantidad' de cada producto.
+    // Corresponde a la información que se mapeará a la nueva entidad SaleProduct.
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

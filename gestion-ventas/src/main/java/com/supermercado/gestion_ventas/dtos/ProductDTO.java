@@ -1,12 +1,9 @@
 package com.supermercado.gestion_ventas.dtos;
 
-import com.supermercado.gestion_ventas.models.Sale;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -16,5 +13,7 @@ public class ProductDTO {
     private String name;
     private double price;
     private String category;
-    private Set<SaleDTO> sales = new HashSet<>();
+    // TODO [ACTUALIZACIÓN DTO]: Se eliminó 'Set<SaleDTO> sales'.
+    // La relación Product-Sale ahora se gestiona vía SaleProduct para la cantidad.
+    // Este DTO de producto ya no contiene la lista completa de ventas para evitar sobrecarga y bucles.
 }

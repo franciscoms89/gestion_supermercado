@@ -1,4 +1,5 @@
 package com.supermercado.gestion_ventas.models;
+import com.supermercado.gestion_ventas.models.keys.SaleProduct;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,13 +25,10 @@ public class Sale {
 
     private LocalDate saleDate;
 
-    //Relación: Una Venta contiene muchos Productos
-    //Una Venta puede tener muchos Productos y un Producto puede estar en muchas Ventas
-    @ManyToMany
-    @JoinTable(
-            name = "sale_products",
-            joinColumns = @JoinColumn(name = "sale_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-            )
-    private Set<Product> products = new HashSet<>();
+    // TODO [IMPORTANTE]: Cambio de relación con Product.
+    // Antes: @ManyToMany y @JoinTable directamente aquí.
+    // Ahora: La relación es a través de la entidad intermedia SaleProduct.
+    // Esto es NECESARIO para manejar la 'cantidad' de productos en cada venta.
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<SaleProduct> saleProducts = new HashSet<>();
 }
