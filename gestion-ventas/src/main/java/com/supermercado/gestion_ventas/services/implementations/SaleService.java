@@ -90,9 +90,9 @@ public class SaleService implements SaleInterfaz {
 
 
     @Override
-    public SaleDTO convertToDTO(Sale s) {
+    public SaleDTO convertToDTO(Sale s) {                 //metodos para mapear OBJ a DTO
 
-        List<SaleProduct> saleProduct = salesRepo.findAll();
+        List<SaleProduct> saleProduct = salesRepo.findAll();     //usamos este repositorio para hacer la relacion
 
         List<SaleDTO.SaleDetailsDTO> saleDetails = saleProduct.stream()
                 .filter(sp->Objects.equals(sp.getSale().getId(),s.getId()) )
@@ -108,7 +108,7 @@ public class SaleService implements SaleInterfaz {
         );
     }
     @Override
-    public Sale convertToOBJ(SaleDTO s) {
+    public Sale convertToOBJ(SaleDTO s) {                       //metodos para mapear DTO a OBJ
         Sale sale = new Sale();
         sale.setId(s.getId());
         sale.setSaleDate(s.getSaleDate());
