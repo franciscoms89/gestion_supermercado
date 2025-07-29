@@ -4,6 +4,7 @@ import com.supermercado.gestion_ventas.dtos.ProductDTO;
 import com.supermercado.gestion_ventas.dtos.SaleDTO;
 import com.supermercado.gestion_ventas.models.Product;
 import com.supermercado.gestion_ventas.models.Sale;
+import com.supermercado.gestion_ventas.models.keys.SaleProduct;
 import com.supermercado.gestion_ventas.repositories.ProductRepositoryInterfaz;
 import com.supermercado.gestion_ventas.response.Response;
 import com.supermercado.gestion_ventas.services.interfaces.ProductInterfaz;
@@ -113,14 +114,14 @@ public class ProductService  implements ProductInterfaz {
     @Override
     public ProductDTO convertToDTO(Product p)          //metodos para mapear OBJ a DTO
     {
-        Set<SaleDTO> sales = new HashSet<>();
-        return new ProductDTO(p.getId(),p.getName(),p.getPrice(), p.getCategory(),sales);
+        return new ProductDTO(p.getId(),p.getName(),p.getPrice(), p.getCategory());
     }
 
     @Override
     public Product convertToOBJ(ProductDTO p)             //metodos para mapear DTO a OBJ
     {
-        Set<Sale> sales = p.getSales() == null || p.getSales().isEmpty() ? new HashSet<>() : p.getSales().stream().map(sai::convertToOBJ).collect(Collectors.toSet());
-        return new Product(p.getId(), p.getName(), p.getPrice(), p.getCategory(), sales);
+
+        Set<SaleProduct> saleProducts = new HashSet<>();
+        return new Product(p.getId(), p.getName(),p.getPrice(),p.getCategory(),saleProducts);
     }
 }

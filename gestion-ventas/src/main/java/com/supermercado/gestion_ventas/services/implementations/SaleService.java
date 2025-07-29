@@ -8,6 +8,7 @@ import com.supermercado.gestion_ventas.models.Sale;
 import com.supermercado.gestion_ventas.models.Shop;
 import com.supermercado.gestion_ventas.models.keys.SaleProduct;
 import com.supermercado.gestion_ventas.models.keys.SaleProductId;
+import com.supermercado.gestion_ventas.repositories.SaleProductRepositoryInterfaz;
 import com.supermercado.gestion_ventas.repositories.SaleRepositoryInterfaz;
 import com.supermercado.gestion_ventas.response.Response;
 import com.supermercado.gestion_ventas.services.interfaces.SaleInterfaz;
@@ -16,10 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +26,8 @@ public class SaleService implements SaleInterfaz {
     //relaciones con otros servicios
     @Autowired
     SaleRepositoryInterfaz repository;
+    @Autowired
+    SaleProductRepositoryInterfaz salesRepo;
     @Override
     public SaleDTO register(SaleDTO s) {        //registrar venta
 
@@ -53,6 +53,8 @@ public class SaleService implements SaleInterfaz {
     @Override
     public List<SaleDTO> listAll(Long shopId, LocalDate saleDate) {            //listar compra
         List<Sale> saleList = repository.findAll();
+
+        System.err.println(saleList.size());
         if(saleList.isEmpty())
         {
             new Response("No tienes ninguna compra",
@@ -62,8 +64,10 @@ public class SaleService implements SaleInterfaz {
 
 
         return saleList.stream().map(this::convertToDTO)
-                .toList();
+                .collect(Collectors.toList());
     }
+
+
 
     @Override
     public Response delete(Long id) {                       //borrar compra
@@ -81,15 +85,27 @@ public class SaleService implements SaleInterfaz {
     }
 
 
-    ///Todo: mapear objectos
-    @Override
-    public SaleDTO convertToDTO(Sale s)          //metodos para mapear OBJ a DTO
-    {
-        SaleDTO dto = new SaleDTO();
-        List<SaleDTO.SaleDetailsDTO> saleDetails =  dto.getSaleDetails();
-        Long shop = s.getShop().getId();
 
-        return new SaleDTO(s.getId(),shop,s.getSaleDate(),saleDetails);
+    ///Todo: mapear objectos
+
+
+    @Override
+    public SaleDTO convertToDTO(Sale s) {
+
+        List<SaleProduct> saleProduct = salesRepo.findAll();
+
+        List<SaleDTO.SaleDetailsDTO> saleDetails = saleProduct.stream()
+                .filter(sp->Objects.equals(sp.getSale().getId(),s.getId()) )
+                .map(sp -> new SaleDTO.SaleDetailsDTO(sp.getId().getProductId(), sp.getQuantity()))
+                .collect(Collectors.toList());
+
+
+        return new SaleDTO(
+                s.getId(),
+                s.getShop().getId(),
+                s.getSaleDate(),
+                saleDetails
+        );
     }
     @Override
     public Sale convertToOBJ(SaleDTO s) {
@@ -120,6 +136,5 @@ public class SaleService implements SaleInterfaz {
         sale.setSaleProducts(products);
         return sale;
     }
-
 
 }

@@ -1,6 +1,7 @@
 package com.supermercado.gestion_ventas.services.interfaces;
 import com.supermercado.gestion_ventas.dtos.SaleDTO;
 import com.supermercado.gestion_ventas.models.Sale;
+import com.supermercado.gestion_ventas.models.keys.SaleProduct;
 import com.supermercado.gestion_ventas.response.Response;
 
 import java.time.LocalDate;
@@ -17,9 +18,16 @@ public interface SaleInterfaz {
 
     
     ///Todo: mapear objectos
-    SaleDTO convertToDTO(Sale s);          //metodos para mapear OBJ a DTO
+      //metodos para mapear OBJ a DTO
+
+          //metodos para mapear OBJ a DTO
+
+
+    SaleDTO convertToDTO(Sale s);
 
     Sale convertToOBJ(SaleDTO s);              //metodos para mapear DTO a OBJ
 
-   
+
+
+
 }
