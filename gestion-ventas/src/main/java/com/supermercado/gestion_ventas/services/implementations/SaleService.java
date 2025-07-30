@@ -48,7 +48,7 @@ public class SaleService implements SaleInterfaz {
 
     @Override
     public List<SaleDTO> listAll(Long shopId, LocalDate saleDate) {            //listar compra
-
+        System.out.println(shopId);
         List<Sale> saleList = saleRepository.findAll();
 
         if(saleList.isEmpty())
@@ -56,10 +56,27 @@ public class SaleService implements SaleInterfaz {
             new Response("No tienes ninguna compra",
                     HttpStatus.NO_CONTENT.value(),
                     LocalDate.now());
-        }
 
-        return saleList.stream().map(this::convertToDTO)
-                .collect(Collectors.toList());
+            return saleList.stream().map(this::convertToDTO)
+                    .collect(Collectors.toList());
+        }
+        else
+        {
+            List<SaleDTO> salesFilter = saleList.stream()
+                    .filter(sale -> shopId == null || sale.getShop().getId().equals(shopId))
+                    .filter(sale -> saleDate == null || sale.getSaleDate().equals(saleDate))
+                    .map(this::convertToDTO)
+                    .toList();
+
+            if(salesFilter.isEmpty())
+            {
+                new Response("No tienes ninguna compra con esos filtros",
+                        HttpStatus.NO_CONTENT.value(),
+                        LocalDate.now());
+            }
+
+            return salesFilter;
+        }
     }
 
     @Override

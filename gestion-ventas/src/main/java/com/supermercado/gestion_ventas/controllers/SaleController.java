@@ -21,9 +21,10 @@ public class SaleController {
 
     // GET - Obtener todas las ventas con posibles filtrados
     @GetMapping
-    public ResponseEntity<List<SaleDTO>> listAll(@RequestParam(required = false) Long shopId,
-                                                 @RequestParam(required = false) LocalDate saleDate) {
-        List<SaleDTO> list = saleService.listAll(shopId, saleDate);
+    public ResponseEntity<List<SaleDTO>> listAll(@RequestParam(required = false) Long tiendaId,
+                                                 @RequestParam(required = false) LocalDate fechaOferta) {
+        // TODO [IMPORTANTE]: variables en español para hacer las busquedas, ya que los endPoints estan en español.
+        List<SaleDTO> list = saleService.listAll(tiendaId, fechaOferta);
         return ResponseEntity.ok(list);
     }
 
