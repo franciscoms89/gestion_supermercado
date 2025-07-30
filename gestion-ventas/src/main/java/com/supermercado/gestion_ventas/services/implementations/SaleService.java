@@ -1,152 +1,150 @@
 package com.supermercado.gestion_ventas.services.implementations;
 
 import com.supermercado.gestion_ventas.dtos.SaleDTO;
+import com.supermercado.gestion_ventas.exceptions.ProductNotFoundException;
+import com.supermercado.gestion_ventas.exceptions.SaleNotFoundException;
+import com.supermercado.gestion_ventas.exceptions.ShopNotFoundException;
 import com.supermercado.gestion_ventas.models.Product;
 import com.supermercado.gestion_ventas.models.Sale;
 import com.supermercado.gestion_ventas.models.Shop;
 import com.supermercado.gestion_ventas.models.keys.SaleProduct;
-import com.supermercado.gestion_ventas.models.keys.SaleProductId;
-import com.supermercado.gestion_ventas.repositories.SaleProductRepositoryInterfaz;
+import com.supermercado.gestion_ventas.repositories.ProductRepositoryInterfaz;
 import com.supermercado.gestion_ventas.repositories.SaleRepositoryInterfaz;
+import com.supermercado.gestion_ventas.repositories.ShopRepositoryInterfaz;
 import com.supermercado.gestion_ventas.response.Response;
 import com.supermercado.gestion_ventas.services.interfaces.SaleInterfaz;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class SaleService implements SaleInterfaz {
 
-    @Autowired                                     //repositorios utilizados
-    SaleRepositoryInterfaz saleRepository;
+    //relaciones con otros servicios
     @Autowired
-    SaleProductRepositoryInterfaz salesRepo;
+    SaleRepositoryInterfaz repository;
+
+    @Autowired
+    private ShopRepositoryInterfaz shopRepositoryInterfaz;
+
+    @Autowired
+    private ProductRepositoryInterfaz productRepositoryInterfaz;
+
     @Override
-    public ResponseEntity<Response> register(SaleDTO s) {        //registrar venta
+    public SaleDTO register(SaleDTO s) {        //registrar venta
 
         try{
             Sale saleRecover = this.convertToOBJ(s);
 
-             Sale saleSave = saleRepository.save(saleRecover);
+             Sale saleSave = repository.save(saleRecover);
 
-            Response response = new Response("La compra se registro correctamente",
+            new Response("La compra se registro correctamente",
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        } catch (Exception e) {
-            Response response = new Response("No se pudo registrar la compra",
-                    HttpStatus.NO_CONTENT.value(),
-                    LocalDate.now());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            return convertToDTO(saleSave);
         }
-
+        catch (ShopNotFoundException | ProductNotFoundException e) {
+            throw e;
+        }
+        catch (Exception e){
+            System.err.println("Error inesperado al registrar la venta: " + e.getMessage());
+            throw new RuntimeException("Error al registrar la compra: " + e.getMessage());
+        }
 
     }
 
     @Override
-    public ResponseEntity<?> listAll(Long shopId, LocalDate saleDate) {            //listar compra
-        System.out.println(shopId);
-        List<Sale> saleList = saleRepository.findAll();
-        List<SaleDTO> salesFilter = List.of();
-
+    public List<SaleDTO> listAll(Long shopId, LocalDate saleDate) {            //listar compra
+        List<Sale> saleList = repository.findAll();
         if(saleList.isEmpty())
         {
-            Response response = new Response("No tienes ninguna compra con esos filtros",
+            new Response("No tienes ninguna compra",
                     HttpStatus.NO_CONTENT.value(),
                     LocalDate.now());
-
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
         }
-        else
-        {
-            salesFilter = saleList.stream()
-                    .filter(sale -> shopId == null || sale.getShop().getId().equals(shopId))
-                    .filter(sale -> saleDate == null || sale.getSaleDate().equals(saleDate))
-                    .map(this::convertToDTO)
-                    .toList();
-
-            if(salesFilter.isEmpty())
-            {
-                Response response = new Response("No tienes ninguna compra con esos filtros",
-                        HttpStatus.NO_CONTENT.value(),
-                        LocalDate.now());
-
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
-            }
-
-
-        }
-        return ResponseEntity.ok(salesFilter);
+        return saleList.stream().map(this::convertToDTO)
+                .toList();
     }
 
     @Override
-    public Response delete(Long id) {                       //borrar compra
-
+    public Response delete(Long id) {               //borrar compra
+        if (!repository.existsById(id)){
+            throw new SaleNotFoundException("Venta con ID " + id + " no encontrado:");
+        }
         try {
-            saleRepository.deleteById(id);
-            return  new Response("se elimino la Compra" + id,
+            repository.deleteById(id);
+            return  new Response("Se elimino la compra con ID " + id,
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
         } catch (Exception e) {
-            return new Response("No se pudo eliminar la Compra" + id,
-                    HttpStatus.NO_CONTENT.value(),
-                    LocalDate.now());
+            System.err.println("Error al eliminar la compar con ID " + id + ": " + e.getMessage());
+            throw new RuntimeException("No se pudo eliminar la compra con ID " + id + ": " + e.getMessage(), e);
         }
 
     }
-
-
-
-
 
 
     ///Todo: mapear objectos
     @Override
-    public SaleDTO convertToDTO(Sale s) {                 //metodos para mapear OBJ a DTO
+    public SaleDTO convertToDTO(Sale s)          //metodos para mapear OBJ a DTO
+    {
+            // Mapea los detalles de la venta (productos y cantidades)
+        List<SaleDTO.SaleDetailsDTO> saleDetails = s.getSaleProducts() != null ?
+                s.getSaleProducts().stream()
+                        .map(saleProduct -> new SaleDTO.SaleDetailsDTO(
+                                saleProduct.getProduct().getId(),
+                                saleProduct.getQuantity()))
+                        .collect(Collectors.toList()) :
+                List.of();
 
-        List<SaleProduct> saleProduct = salesRepo.findAll();     //usamos este repositorio para hacer la relacion
-
-        List<SaleDTO.SaleDetailsDTO> saleDetails = saleProduct.stream()
-                .filter(sp->Objects.equals(sp.getSale().getId(),s.getId()))
-                .map(sp -> new SaleDTO.SaleDetailsDTO(sp.getId().getProductId(), sp.getQuantity()))
-                .collect(Collectors.toList());
-
-        return new SaleDTO(s.getId(), s.getShop().getId(), s.getSaleDate(), saleDetails);
+        // Manejo seguro del shopId para evitar NullPointerException
+        Long shopId = (s.getShop() != null) ? s.getShop().getId() : null;
+        return new SaleDTO(s.getId(), shopId, s.getSaleDate(),saleDetails);
     }
 
     @Override
-    public Sale convertToOBJ(SaleDTO s) {                       //metodos para mapear DTO a OBJ
+    public Sale convertToOBJ(SaleDTO s) {  //metodos para mapear DTO a OBJ
         Sale sale = new Sale();
-        sale.setId(s.getId());
-        sale.setSaleDate(s.getSaleDate());
 
-        // Corregimos esto:
-        Shop shop = new Shop();
-        shop.setId(s.getShopId());
+        // 1. Setea el ID de la venta SOLO si ya existe (para actualizaciones)
+        if (s.getId() != null){
+            sale.setId(s.getId());
+        }
+
+        // 2. BUSCA LA TIENDA EN LA BASE DE DATOS
+        Long shopIdFromDTO = s.getShopId();
+        Shop shop = shopRepositoryInterfaz.findById(shopIdFromDTO)
+                .orElseThrow(() -> new ShopNotFoundException("Sucursal con ID " + shopIdFromDTO + " no encontrada."));
         sale.setShop(shop);
 
-        Set<SaleProduct> products = s.getSaleDetails() == null ? new HashSet<>() :
-                s.getSaleDetails().stream()
-                        .map(detail -> {
-                            Product product = new Product();
-                            product.setId(detail.getProductId());
+        // 3. Marca la fecha de la venta
+        sale.setSaleDate(s.getSaleDate());
 
-                            SaleProduct saleProduct = new SaleProduct();
-                            saleProduct.setSale(sale);
-                            saleProduct.setProduct(product);
-                            saleProduct.setQuantity(detail.getQuantity());
-                            saleProduct.setId(new SaleProductId(sale.getId(), detail.getProductId()));
-                            return saleProduct;
-                        })
-                        .collect(Collectors.toSet());
+        // 4. Mapea los detalles de la venta (SaleDetailsDTO) a entidades SaleProduct
+        Set<SaleProduct> saleProducts = new HashSet<>();
+        if (s.getSaleDetails() != null){
+            for (SaleDTO.SaleDetailsDTO detailsDTO : s.getSaleDetails()){
+                Long productIdFromDTO = detailsDTO.getProductId();
+                Product product = productRepositoryInterfaz.findById(productIdFromDTO)
+                        .orElseThrow(() -> new ProductNotFoundException("Producto con ID " + productIdFromDTO + " no encontrado."));
 
-        sale.setSaleProducts(products);
+                SaleProduct saleProduct = new SaleProduct();
+                saleProduct.setSale(sale);  // Asigna la venta actual
+                saleProduct.setProduct(product);    // Asigna el producto cargado
+                saleProduct.setQuantity(detailsDTO.getQuantity());  // Asigna la cantidad
+
+                saleProducts.add(saleProduct);
+            }
+        }
+        sale.setSaleProducts(saleProducts); // Asigna el Set de SaleProduct REALES a la venta
+
         return sale;
     }
-
 }

@@ -2,40 +2,41 @@ package com.supermercado.gestion_ventas.services.implementations;
 
 import com.supermercado.gestion_ventas.dtos.SaleDTO;
 import com.supermercado.gestion_ventas.dtos.ShopDTO;
+import com.supermercado.gestion_ventas.exceptions.ShopNotFoundException;
 import com.supermercado.gestion_ventas.models.Sale;
 import com.supermercado.gestion_ventas.models.Shop;
 import com.supermercado.gestion_ventas.repositories.ShopRepositoryInterfaz;
 import com.supermercado.gestion_ventas.response.Response;
 import com.supermercado.gestion_ventas.services.interfaces.SaleInterfaz;
 import com.supermercado.gestion_ventas.services.interfaces.ShopInterfaz;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class ShopService implements ShopInterfaz {
 
+    //relaciones con otros servicios
+    @Autowired
+    ShopRepositoryInterfaz repository;
 
-    @Autowired                                  //repositorios utilizados
-    ShopRepositoryInterfaz shopRepository;
-
-    @Autowired                                        //relaciones con otros servicios
+    @Autowired
     SaleInterfaz SI;
+
 
     @Override
     public List<ShopDTO> listAll() {          //listar tiendas
-
-        List<Shop> shopList = shopRepository.findAll();
+        List<Shop> shopList = repository.findAll();
 
         if(shopList.isEmpty())
         {
-            new Response("No tienes tiendas registradas",
+            new Response("No tienes sucursales registradas",
                     HttpStatus.NO_CONTENT.value(),
                     LocalDate.now());
         }
@@ -44,77 +45,56 @@ public class ShopService implements ShopInterfaz {
     }
 
     @Override
-    public  ResponseEntity<?> create(ShopDTO s) {          //crear tienda
-
+    public ShopDTO create(ShopDTO s) {          //crear tienda
         try{
             Shop shopRecover = this.converToOBJ(s);
-            Shop shopSave = shopRepository.save(shopRecover);
+            Shop shopSave = repository.save(shopRecover);
 
-            Response response =  new Response("Se creo correctamente la  tienda",
+            new Response("Se creó correctamente la sucursal",
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+
+            return convertToDTO(shopSave);
+
 
         } catch (Exception e) {
-            Response response =  new Response("No se pudo crear la tienda",
-                    HttpStatus.NO_CONTENT.value(),
-                    LocalDate.now());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            System.err.println("Error al crear la sucursal: " + e.getMessage());
+            throw new RuntimeException("No se pudo crear la sucursal: " + e.getMessage(), e);
         }
 
     }
 
     @Override
-    public ResponseEntity<?> update(Long id, ShopDTO s) {             //actualizar tienda
+    public Response update(Long id, ShopDTO s) {             //actualizar tienda
+       Shop existingShop = repository.findById(id)
+               .orElseThrow(() -> new ShopNotFoundException("Sucursal con ID " + id + " no encontrado para actualizar"));
 
-        Optional<Shop> exist = shopRepository.findById(id);
+       existingShop.setName(s.getName());
+       existingShop.setCity(s.getCity());
+       existingShop.setAddress(s.getAddress());
 
-        if(exist.isPresent()){
-            Shop shop = new Shop();
-            shop.setId(id);
-            shop.setName(s.getName());
-            shop.setCity(s.getCity());
-            Shop SaleObj =this.converToOBJ(s);
-            shop.setSales(SaleObj.getSales());
-
-            //actualizar
-            Shop shopUpdate = shopRepository.save(shop);
-            Response response = new Response("Se actualizo correctamente la tienda" + id,
-                    HttpStatus.ACCEPTED.value(),
-                    LocalDate.now());
-
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
-        }
-        else
-        {
-            System.err.println("No se pudo actualizar");
-           Response response = new Response("No se pudo actualizar la tienda",
-                    HttpStatus.NO_CONTENT.value(),
-                    LocalDate.now());
-
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
-        }
-
+       Shop shopUpdate = repository.save(existingShop);
+       return new Response("Se actualizó correctamente la sucursal con ID " + id,
+               HttpStatus.ACCEPTED.value(),
+               LocalDate.now());
     }
 
     @Override
     public Response delete(Long id) {   //eliminar tienda
 
+        if (!repository.existsById(id)){
+            throw new ShopNotFoundException("Sucursal con ID " + id + " no encontrada para eliminar.");
+        }
         try {
-            shopRepository.deleteById(id);
-            return new Response("se elimino la tienda" + id,
+            repository.deleteById(id);
+            return new Response("Se eliminó la sucursal " + id,
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
-        } catch (Exception e) {
-            return new Response("no se pudo eliminar la tienda" + id,
-                    HttpStatus.NO_CONTENT.value(),
-                    LocalDate.now());
+        }catch (Exception e){
+            System.err.println("Error al eliminar la sucursal con ID " + id + ": " + e.getMessage());
+            throw new RuntimeException("No se pudo eliminar la sucursal con ID " + id + ": " + e.getMessage(), e);
         }
-
     }
-
-
-
 
 
 
@@ -122,15 +102,19 @@ public class ShopService implements ShopInterfaz {
     @Override
     public ShopDTO convertToDTO(Shop s)          //metodos para mapear OBJ a DTO
     {
-        List<SaleDTO> sales = s.getSales() == null || s.getSales().isEmpty() ? new ArrayList<>()
-                              : s.getSales().stream().map(SI::convertToDTO).toList();
+        List<SaleDTO> sales = new ArrayList<>();
+
+        if (s.getSales() != null){
+            sales = s.getSales().stream().map(SI::convertToDTO).toList();
+        }
         return new ShopDTO(s.getId(),s.getName(),s.getCity(),s.getAddress(), sales);
     }
 
     @Override
-    public Shop converToOBJ(ShopDTO s) {         //metodos para mapear DTO a OBJ
+    public Shop converToOBJ(ShopDTO s) {
 
-        List<Sale> sales = s.getSales() == null || s.getSales().isEmpty() ? new ArrayList<>() : s.getSales().stream().map(SI::convertToOBJ).toList();
+        List<Sale> sales = s.getSales()== null || s.getSales().isEmpty() ? new ArrayList<>() : s.getSales().stream().map(SI::convertToOBJ).toList();
         return new Shop(s.getId(),s.getName(),s.getCity(),s.getAddress(), sales);
     }
 }
+
