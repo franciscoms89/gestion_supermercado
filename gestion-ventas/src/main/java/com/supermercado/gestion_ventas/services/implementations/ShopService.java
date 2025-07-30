@@ -20,17 +20,17 @@ import java.util.Optional;
 @Service
 public class ShopService implements ShopInterfaz {
 
-    //relaciones con otros servicios
-    @Autowired
-    ShopRepositoryInterfaz repository;
 
-    @Autowired
+    @Autowired                                  //repositorios utilizados
+    ShopRepositoryInterfaz shopRepository;
+
+    @Autowired                                        //relaciones con otros servicios
     SaleInterfaz SI;
-
 
     @Override
     public List<ShopDTO> listAll() {          //listar tiendas
-        List<Shop> shopList = repository.findAll();
+
+        List<Shop> shopList = shopRepository.findAll();
 
         if(shopList.isEmpty())
         {
@@ -45,17 +45,15 @@ public class ShopService implements ShopInterfaz {
     @Override
     public ShopDTO create(ShopDTO s) {          //crear tienda
 
-
         try{
             Shop shopRecover = this.converToOBJ(s);
-            Shop shopSave = repository.save(shopRecover);
+            Shop shopSave = shopRepository.save(shopRecover);
 
             new Response("Se creo correctamente la  tienda",
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
 
             return convertToDTO(shopSave);
-
 
         } catch (Exception e) {
             new Response("No se pudo crear la tienda",
@@ -68,7 +66,9 @@ public class ShopService implements ShopInterfaz {
 
     @Override
     public Response update(Long id, ShopDTO s) {             //actualizar tienda
-        Optional<Shop> exist = repository.findById(id);
+
+        Optional<Shop> exist = shopRepository.findById(id);
+
         if(exist.isPresent()){
             Shop shop = new Shop();
             shop.setId(id);
@@ -77,13 +77,11 @@ public class ShopService implements ShopInterfaz {
             Shop SaleObj =this.converToOBJ(s);
             shop.setSales(SaleObj.getSales());
 
-
             //actualizar
-            Shop shopUpdate = repository.save(shop);
+            Shop shopUpdate = shopRepository.save(shop);
             return  new Response("Se actualizo correctamente la tienda" + id,
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
-
         }
         else
         {
@@ -99,7 +97,7 @@ public class ShopService implements ShopInterfaz {
     public Response delete(Long id) {   //eliminar tienda
 
         try {
-            repository.deleteById(id);
+            shopRepository.deleteById(id);
             return new Response("se elimino la tienda" + id,
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
@@ -110,6 +108,9 @@ public class ShopService implements ShopInterfaz {
         }
 
     }
+
+
+
 
 
 

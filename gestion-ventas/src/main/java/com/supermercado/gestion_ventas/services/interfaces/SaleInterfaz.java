@@ -16,14 +16,12 @@ public interface SaleInterfaz {
     Response delete(Long id);                //eliminar compra
 
 
-    
+
+
+
+
     ///Todo: mapear objectos
-      //metodos para mapear OBJ a DTO
-
-          //metodos para mapear OBJ a DTO
-
-
-    SaleDTO convertToDTO(Sale s);
+    SaleDTO convertToDTO(Sale s);                   //metodos para mapear OBJ a DTO
 
     Sale convertToOBJ(SaleDTO s);              //metodos para mapear DTO a OBJ
 

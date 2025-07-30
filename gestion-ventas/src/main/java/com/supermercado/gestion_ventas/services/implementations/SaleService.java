@@ -1,7 +1,5 @@
 package com.supermercado.gestion_ventas.services.implementations;
 
-
-
 import com.supermercado.gestion_ventas.dtos.SaleDTO;
 import com.supermercado.gestion_ventas.models.Product;
 import com.supermercado.gestion_ventas.models.Sale;
@@ -23,9 +21,8 @@ import java.util.stream.Collectors;
 @Service
 public class SaleService implements SaleInterfaz {
 
-    //relaciones con otros servicios
-    @Autowired
-    SaleRepositoryInterfaz repository;
+    @Autowired                                     //repositorios utilizados
+    SaleRepositoryInterfaz saleRepository;
     @Autowired
     SaleProductRepositoryInterfaz salesRepo;
     @Override
@@ -34,7 +31,7 @@ public class SaleService implements SaleInterfaz {
         try{
             Sale saleRecover = this.convertToOBJ(s);
 
-             Sale saleSave = repository.save(saleRecover);
+             Sale saleSave = saleRepository.save(saleRecover);
 
             new Response("La compra se registro correctamente",
                     HttpStatus.ACCEPTED.value(),
@@ -47,14 +44,13 @@ public class SaleService implements SaleInterfaz {
             throw new RuntimeException(e);
         }
 
-
     }
 
     @Override
     public List<SaleDTO> listAll(Long shopId, LocalDate saleDate) {            //listar compra
-        List<Sale> saleList = repository.findAll();
 
-        System.err.println(saleList.size());
+        List<Sale> saleList = saleRepository.findAll();
+
         if(saleList.isEmpty())
         {
             new Response("No tienes ninguna compra",
@@ -62,17 +58,15 @@ public class SaleService implements SaleInterfaz {
                     LocalDate.now());
         }
 
-
         return saleList.stream().map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-
-
     @Override
     public Response delete(Long id) {                       //borrar compra
+
         try {
-            repository.deleteById(id);
+            saleRepository.deleteById(id);
             return  new Response("se elimino la Compra" + id,
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
@@ -86,27 +80,23 @@ public class SaleService implements SaleInterfaz {
 
 
 
+
+
+
     ///Todo: mapear objectos
-
-
     @Override
     public SaleDTO convertToDTO(Sale s) {                 //metodos para mapear OBJ a DTO
 
         List<SaleProduct> saleProduct = salesRepo.findAll();     //usamos este repositorio para hacer la relacion
 
         List<SaleDTO.SaleDetailsDTO> saleDetails = saleProduct.stream()
-                .filter(sp->Objects.equals(sp.getSale().getId(),s.getId()) )
+                .filter(sp->Objects.equals(sp.getSale().getId(),s.getId()))
                 .map(sp -> new SaleDTO.SaleDetailsDTO(sp.getId().getProductId(), sp.getQuantity()))
                 .collect(Collectors.toList());
 
-
-        return new SaleDTO(
-                s.getId(),
-                s.getShop().getId(),
-                s.getSaleDate(),
-                saleDetails
-        );
+        return new SaleDTO(s.getId(), s.getShop().getId(), s.getSaleDate(), saleDetails);
     }
+
     @Override
     public Sale convertToOBJ(SaleDTO s) {                       //metodos para mapear DTO a OBJ
         Sale sale = new Sale();

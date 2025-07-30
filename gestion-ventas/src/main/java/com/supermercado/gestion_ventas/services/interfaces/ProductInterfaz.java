@@ -17,9 +17,12 @@ public interface ProductInterfaz {
     Response delete(Long id);                //eliminar producto
 
 
+
+
+
+
      ///Todo: mapear objectos
     ProductDTO convertToDTO(Product p);          //metodos para mapear OBJ a DTO
-
 
     Product convertToOBJ(ProductDTO p);              //metodos para mapear DTO a OBJ
 

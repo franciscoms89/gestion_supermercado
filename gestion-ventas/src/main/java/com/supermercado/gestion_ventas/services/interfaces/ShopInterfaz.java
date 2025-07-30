@@ -18,6 +18,12 @@ public interface ShopInterfaz {
 
     Response delete(Long id);                //eliminar tienda
 
+
+
+
+
+
+
     ///Todo: mapear objectos
     ShopDTO convertToDTO(Shop s);          //metodos para mapear OBJ a DTO
 

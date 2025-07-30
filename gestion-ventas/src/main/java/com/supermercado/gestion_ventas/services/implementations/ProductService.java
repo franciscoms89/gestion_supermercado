@@ -1,14 +1,11 @@
 package com.supermercado.gestion_ventas.services.implementations;
 
 import com.supermercado.gestion_ventas.dtos.ProductDTO;
-import com.supermercado.gestion_ventas.dtos.SaleDTO;
 import com.supermercado.gestion_ventas.models.Product;
-import com.supermercado.gestion_ventas.models.Sale;
 import com.supermercado.gestion_ventas.models.keys.SaleProduct;
 import com.supermercado.gestion_ventas.repositories.ProductRepositoryInterfaz;
 import com.supermercado.gestion_ventas.response.Response;
 import com.supermercado.gestion_ventas.services.interfaces.ProductInterfaz;
-import com.supermercado.gestion_ventas.services.interfaces.SaleInterfaz;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,21 +15,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService  implements ProductInterfaz {
 
-    @Autowired
-    ProductRepositoryInterfaz repository;
-
-    //relaciones con otros servicios
-    SaleInterfaz sai;
+    @Autowired                                    //repositorios utilizados
+    ProductRepositoryInterfaz productRepository;
 
     @Override
     public List<ProductDTO> listAll() {//listar producto
 
-        List<Product> productList = repository.findAll();
+        List<Product> productList = productRepository.findAll();
 
         if(productList.isEmpty())
         {
@@ -47,10 +40,9 @@ public class ProductService  implements ProductInterfaz {
     @Override
     public ProductDTO create(ProductDTO p) {//crear producto
 
-
         try{
             Product productRecover = this.convertToOBJ(p);
-             Product productSave = repository.save(productRecover);
+             Product productSave = productRepository.save(productRecover);
             new Response("Se creo el producto correctamente",
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
@@ -63,12 +55,13 @@ public class ProductService  implements ProductInterfaz {
             throw new RuntimeException(e);
         }
 
-
     }
 
     @Override
     public Response update(Long id, ProductDTO p) {      // actualizar Produto
-        Optional<Product> exist = repository.findById(id);
+
+        Optional<Product> exist = productRepository.findById(id);
+
         if(exist.isPresent()) {
             Product product = new Product();
             product.setId(id);
@@ -76,8 +69,7 @@ public class ProductService  implements ProductInterfaz {
             product.setPrice(p.getPrice());
             product.setCategory(p.getCategory());
 
-            Product productUpdate = repository.save(product);
-
+            Product productUpdate = productRepository.save(product);
 
             return  new Response("Se actualizo correctamente el producto" + id,
                     HttpStatus.ACCEPTED.value(),
@@ -96,7 +88,7 @@ public class ProductService  implements ProductInterfaz {
     public Response delete(Long id) {             //borrar producto
 
         try {
-            repository.deleteById(id);
+            productRepository.deleteById(id);
             return new Response("se elimino la Compra" + id,
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
@@ -106,8 +98,11 @@ public class ProductService  implements ProductInterfaz {
                     LocalDate.now());
         }
 
-
     }
+
+
+
+
 
 
     ///Todo: mapear objectos
