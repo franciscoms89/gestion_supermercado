@@ -22,14 +22,14 @@ public class ShopController {
 
     // GET - Obtener todas las sucursales en forma de lista
     @GetMapping
-    public ResponseEntity<List<ShopDTO>> listAll() {
+    public ResponseEntity<?> listAll() {
         List<ShopDTO> list = shopService.listAll();
         return ResponseEntity.ok(list);
     }
 
     // POST - Crear una nueva sucursal
     @PostMapping
-    public ResponseEntity<ShopDTO> create(@RequestBody ShopDTO shop) {
+    public ResponseEntity<?> create(@RequestBody ShopDTO shop) {
         ShopDTO shopCreated = shopService.create(shop);
         return ResponseEntity.status(HttpStatus.CREATED).body(shopCreated);
     }

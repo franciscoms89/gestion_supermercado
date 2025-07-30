@@ -5,6 +5,7 @@ import com.supermercado.gestion_ventas.dtos.ShopDTO;
 import com.supermercado.gestion_ventas.models.Sale;
 import com.supermercado.gestion_ventas.models.Shop;
 import com.supermercado.gestion_ventas.response.Response;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -12,11 +13,17 @@ public interface ShopInterfaz {
 
     List<ShopDTO> listAll();                //listar tiendas
 
-    ShopDTO create(ShopDTO s);   //crear tienda
+    ResponseEntity<?> create(ShopDTO s);   //crear tienda
 
-    Response update(Long id,ShopDTO s);   //actualizar tienda
+    ResponseEntity<?> update(Long id,ShopDTO s);   //actualizar tienda
 
     Response delete(Long id);                //eliminar tienda
+
+
+
+
+
+
 
     ///Todo: mapear objectos
     ShopDTO convertToDTO(Shop s);          //metodos para mapear OBJ a DTO
