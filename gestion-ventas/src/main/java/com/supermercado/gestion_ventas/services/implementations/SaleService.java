@@ -12,6 +12,7 @@ import com.supermercado.gestion_ventas.response.Response;
 import com.supermercado.gestion_ventas.services.interfaces.SaleInterfaz;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,43 +27,44 @@ public class SaleService implements SaleInterfaz {
     @Autowired
     SaleProductRepositoryInterfaz salesRepo;
     @Override
-    public SaleDTO register(SaleDTO s) {        //registrar venta
+    public ResponseEntity<Response> register(SaleDTO s) {        //registrar venta
 
         try{
             Sale saleRecover = this.convertToOBJ(s);
 
              Sale saleSave = saleRepository.save(saleRecover);
 
-            new Response("La compra se registro correctamente",
+            Response response = new Response("La compra se registro correctamente",
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
-            return convertToDTO(saleSave);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         } catch (Exception e) {
-            new Response("No se pudo registrar la compra",
+            Response response = new Response("No se pudo registrar la compra",
                     HttpStatus.NO_CONTENT.value(),
                     LocalDate.now());
-            throw new RuntimeException(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+
 
     }
 
     @Override
-    public List<SaleDTO> listAll(Long shopId, LocalDate saleDate) {            //listar compra
+    public ResponseEntity<?> listAll(Long shopId, LocalDate saleDate) {            //listar compra
         System.out.println(shopId);
         List<Sale> saleList = saleRepository.findAll();
+        List<SaleDTO> salesFilter = List.of();
 
         if(saleList.isEmpty())
         {
-            new Response("No tienes ninguna compra",
+            Response response = new Response("No tienes ninguna compra con esos filtros",
                     HttpStatus.NO_CONTENT.value(),
                     LocalDate.now());
 
-            return saleList.stream().map(this::convertToDTO)
-                    .collect(Collectors.toList());
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
         }
         else
         {
-            List<SaleDTO> salesFilter = saleList.stream()
+            salesFilter = saleList.stream()
                     .filter(sale -> shopId == null || sale.getShop().getId().equals(shopId))
                     .filter(sale -> saleDate == null || sale.getSaleDate().equals(saleDate))
                     .map(this::convertToDTO)
@@ -70,13 +72,16 @@ public class SaleService implements SaleInterfaz {
 
             if(salesFilter.isEmpty())
             {
-                new Response("No tienes ninguna compra con esos filtros",
+                Response response = new Response("No tienes ninguna compra con esos filtros",
                         HttpStatus.NO_CONTENT.value(),
                         LocalDate.now());
+
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
             }
 
-            return salesFilter;
+
         }
+        return ResponseEntity.ok(salesFilter);
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.supermercado.gestion_ventas.response.Response;
 import com.supermercado.gestion_ventas.services.interfaces.ProductInterfaz;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,30 +24,30 @@ public class ProductService  implements ProductInterfaz {
     ProductRepositoryInterfaz productRepository;
 
     @Override
-    public List<ProductDTO> listAll() {//listar producto
+    public ResponseEntity<?> listAll() {//listar producto
 
         List<Product> productList = productRepository.findAll();
 
         if(productList.isEmpty())
         {
-            new Response("No tienes productos registrados",
+            Response response = new Response("No tienes productos registrados",
                     HttpStatus.NO_CONTENT.value(),
                     LocalDate.now());
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+
         }
-        return productList.stream().map(this::convertToDTO)
-                .toList();
+        return ResponseEntity.ok(productList);
     }
 
     @Override
-    public ProductDTO create(ProductDTO p) {//crear producto
-
+    public ResponseEntity<?> create(ProductDTO p) {//crear producto
+        Product productSave = null;
         try{
             Product productRecover = this.convertToOBJ(p);
-             Product productSave = productRepository.save(productRecover);
+             productSave = productRepository.save(productRecover);
             new Response("Se creo el producto correctamente",
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
-            return convertToDTO(productSave);
 
         }catch (Exception e) {
             new Response("No se pudo registrar el producto",
@@ -54,11 +55,11 @@ public class ProductService  implements ProductInterfaz {
                     LocalDate.now());
             throw new RuntimeException(e);
         }
-
+        return ResponseEntity.ok(productSave);
     }
 
     @Override
-    public Response update(Long id, ProductDTO p) {      // actualizar Produto
+    public ResponseEntity<?> update(Long id, ProductDTO p) {      // actualizar Produto
 
         Optional<Product> exist = productRepository.findById(id);
 
@@ -71,17 +72,21 @@ public class ProductService  implements ProductInterfaz {
 
             Product productUpdate = productRepository.save(product);
 
-            return  new Response("Se actualizo correctamente el producto" + id,
+            Response response =  new Response("Se actualizo correctamente el producto" + id,
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+
         }
         else {
 
-            new Response("No se pudo actualizar el producto",
+            Response response = new Response("No se pudo actualizar el producto",
                     HttpStatus.NO_CONTENT.value(),
                     LocalDate.now());
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
         }
-        return null;
     }
 
     @Override

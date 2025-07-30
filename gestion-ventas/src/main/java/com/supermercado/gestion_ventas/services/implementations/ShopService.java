@@ -10,6 +10,7 @@ import com.supermercado.gestion_ventas.services.interfaces.SaleInterfaz;
 import com.supermercado.gestion_ventas.services.interfaces.ShopInterfaz;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -43,29 +44,28 @@ public class ShopService implements ShopInterfaz {
     }
 
     @Override
-    public ShopDTO create(ShopDTO s) {          //crear tienda
+    public  ResponseEntity<?> create(ShopDTO s) {          //crear tienda
 
         try{
             Shop shopRecover = this.converToOBJ(s);
             Shop shopSave = shopRepository.save(shopRecover);
 
-            new Response("Se creo correctamente la  tienda",
+            Response response =  new Response("Se creo correctamente la  tienda",
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
-
-            return convertToDTO(shopSave);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 
         } catch (Exception e) {
-            new Response("No se pudo crear la tienda",
+            Response response =  new Response("No se pudo crear la tienda",
                     HttpStatus.NO_CONTENT.value(),
                     LocalDate.now());
-            throw new RuntimeException(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
 
     }
 
     @Override
-    public Response update(Long id, ShopDTO s) {             //actualizar tienda
+    public ResponseEntity<?> update(Long id, ShopDTO s) {             //actualizar tienda
 
         Optional<Shop> exist = shopRepository.findById(id);
 
@@ -79,18 +79,22 @@ public class ShopService implements ShopInterfaz {
 
             //actualizar
             Shop shopUpdate = shopRepository.save(shop);
-            return  new Response("Se actualizo correctamente la tienda" + id,
+            Response response = new Response("Se actualizo correctamente la tienda" + id,
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
         }
         else
         {
             System.err.println("No se pudo actualizar");
-            new Response("No se pudo actualizar la tienda",
+           Response response = new Response("No se pudo actualizar la tienda",
                     HttpStatus.NO_CONTENT.value(),
                     LocalDate.now());
+
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
         }
-       return  null;
+
     }
 
     @Override

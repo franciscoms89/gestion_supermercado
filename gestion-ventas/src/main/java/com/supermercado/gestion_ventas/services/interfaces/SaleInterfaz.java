@@ -3,15 +3,16 @@ import com.supermercado.gestion_ventas.dtos.SaleDTO;
 import com.supermercado.gestion_ventas.models.Sale;
 import com.supermercado.gestion_ventas.models.keys.SaleProduct;
 import com.supermercado.gestion_ventas.response.Response;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface SaleInterfaz {
 
-    SaleDTO register(SaleDTO s);         //registrar compra
+    ResponseEntity<Response>register(SaleDTO s);         //registrar compra
 
-    List<SaleDTO> listAll(Long shopId, LocalDate saleDate);                //listar compra
+    ResponseEntity<?> listAll(Long shopId, LocalDate saleDate);                //listar compra
 
     Response delete(Long id);                //eliminar compra
 
