@@ -1,6 +1,7 @@
 package com.supermercado.gestion_ventas.controllers;
 
 import com.supermercado.gestion_ventas.dtos.SaleDTO;
+import com.supermercado.gestion_ventas.response.Response;
 import com.supermercado.gestion_ventas.services.interfaces.SaleInterfaz;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,23 +22,24 @@ public class SaleController {
 
     // GET - Obtener todas las ventas con posibles filtrados
     @GetMapping
-    public ResponseEntity<List<SaleDTO>> listAll(@RequestParam(required = false) Long shopId,
-                                                 @RequestParam(required = false) LocalDate saleDate) {
-        List<SaleDTO> list = saleService.listAll(shopId, saleDate);
+    public ResponseEntity<?> listAll(@RequestParam(required = false) Long tiendaId,
+                                                 @RequestParam(required = false) LocalDate fechaOferta) {
+        // TODO [IMPORTANTE]: variables en español para hacer las busquedas, ya que los endPoints estan en español.
+        ResponseEntity<?> list = saleService.listAll(tiendaId, fechaOferta);
         return ResponseEntity.ok(list);
     }
 
     // POST - Crear una nueva venta
     @PostMapping
-    public ResponseEntity<SaleDTO> create(@RequestBody SaleDTO sale) {
-        SaleDTO saleCreated = saleService.register(sale);
+    public ResponseEntity<?> create(@RequestBody SaleDTO sale) {
+        ResponseEntity<Response> saleCreated = saleService.register(sale);
         return ResponseEntity.status(HttpStatus.CREATED).body(saleCreated);
     }
 
     // DELETE - Eliminar una venta
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        saleService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        Response response = saleService.delete(id);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 }

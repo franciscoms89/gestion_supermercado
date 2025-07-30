@@ -117,3 +117,4 @@ public class ShopService implements ShopInterfaz {
         return new Shop(s.getId(),s.getName(),s.getCity(),s.getAddress(), sales);
     }
 }
+
