@@ -11,11 +11,10 @@ import com.supermercado.gestion_ventas.models.keys.SaleProduct;
 import com.supermercado.gestion_ventas.repositories.ProductRepositoryInterfaz;
 import com.supermercado.gestion_ventas.repositories.SaleRepositoryInterfaz;
 import com.supermercado.gestion_ventas.repositories.ShopRepositoryInterfaz;
-import com.supermercado.gestion_ventas.response.Response;
+
 import com.supermercado.gestion_ventas.services.interfaces.SaleInterfaz;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -38,54 +37,56 @@ public class SaleService implements SaleInterfaz {
     private ProductRepositoryInterfaz productRepositoryInterfaz;
 
     @Override
-    public SaleDTO register(SaleDTO s) {        //registrar venta
-
-        try{
-            Sale saleRecover = this.convertToOBJ(s);
-
-             Sale saleSave = repository.save(saleRecover);
-
-            new Response("La compra se registro correctamente",
-                    HttpStatus.ACCEPTED.value(),
-                    LocalDate.now());
-            return convertToDTO(saleSave);
-        }
-        catch (ShopNotFoundException | ProductNotFoundException e) {
+    public SaleDTO register(SaleDTO s) {    //registrar venta
+        try {
+            Sale saleEntity = this.convertToOBJ(s);
+            Sale saleSaved = repository.save(saleEntity);
+            System.out.println("INFO: Venta registrada con éxito con ID: " + saleSaved.getId());
+            return convertToDTO(saleSaved);
+        } catch (ShopNotFoundException | ProductNotFoundException e) {
+            System.err.println("ERROR de negocio al registrar venta: " + e.getMessage());
+            // Relanzamos las excepciones para que el GlobalExceptionHandler las capture.
             throw e;
-        }
-        catch (Exception e){
-            System.err.println("Error inesperado al registrar la venta: " + e.getMessage());
-            throw new RuntimeException("Error al registrar la compra: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("ERROR inesperado al registrar la venta: " + e.getMessage());
+            throw new RuntimeException("Error inesperado al registrar la venta.");
         }
 
     }
-
     @Override
     public List<SaleDTO> listAll(Long shopId, LocalDate saleDate) {            //listar compra
         List<Sale> saleList = repository.findAll();
-        if(saleList.isEmpty())
-        {
-            new Response("No tienes ninguna compra",
-                    HttpStatus.NO_CONTENT.value(),
-                    LocalDate.now());
+        // Lógica de filtrado que busca en la base de datos según los parámetros recibidos.
+        if (shopId != null && saleDate != null) {
+            System.out.println("INFO: Buscando ventas por tienda " + shopId + " y fecha " + saleDate);
+            saleList = repository.findByShopIdAndSaleDate(shopId, saleDate);
+        } else if (shopId != null) {
+            System.out.println("INFO: Buscando ventas por tienda " + shopId);
+            saleList = repository.findByShopId(shopId);
+        } else if (saleDate != null) {
+            System.out.println("INFO: Buscando ventas por fecha " + saleDate);
+            saleList = repository.findBySaleDate(saleDate);
+        } else {
+            System.out.println("INFO: Buscando todas las ventas.");
+            saleList = repository.findAll();
         }
-        return saleList.stream().map(this::convertToDTO)
-                .toList();
+
+        return saleList.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Response delete(Long id) {               //borrar compra
-        if (!repository.existsById(id)){
-            throw new SaleNotFoundException("Venta con ID " + id + " no encontrado:");
+    public void delete(Long id) {               //borrar compra
+        if (!repository.existsById(id)) {
+            throw new SaleNotFoundException("Venta con ID " + id + " no encontrada para eliminar.");
         }
         try {
             repository.deleteById(id);
-            return  new Response("Se elimino la compra con ID " + id,
-                    HttpStatus.ACCEPTED.value(),
-                    LocalDate.now());
+            System.out.println("INFO: Se eliminó la venta con ID " + id);
         } catch (Exception e) {
-            System.err.println("Error al eliminar la compar con ID " + id + ": " + e.getMessage());
-            throw new RuntimeException("No se pudo eliminar la compra con ID " + id + ": " + e.getMessage(), e);
+            System.err.println("ERROR al eliminar la venta con ID " + id + ": " + e.getMessage());
+            throw new RuntimeException("No se pudo eliminar la venta con ID " + id);
         }
 
     }
@@ -112,39 +113,28 @@ public class SaleService implements SaleInterfaz {
     @Override
     public Sale convertToOBJ(SaleDTO s) {  //metodos para mapear DTO a OBJ
         Sale sale = new Sale();
+        sale.setId(s.getId());
 
-        // 1. Setea el ID de la venta SOLO si ya existe (para actualizaciones)
-        if (s.getId() != null){
-            sale.setId(s.getId());
-        }
-
-        // 2. BUSCA LA TIENDA EN LA BASE DE DATOS
-        Long shopIdFromDTO = s.getShopId();
-        Shop shop = shopRepositoryInterfaz.findById(shopIdFromDTO)
-                .orElseThrow(() -> new ShopNotFoundException("Sucursal con ID " + shopIdFromDTO + " no encontrada."));
+        Shop shop = shopRepositoryInterfaz.findById(s.getShopId())
+                .orElseThrow(() -> new ShopNotFoundException("Sucursal con ID " + s.getShopId() + " no encontrada."));
         sale.setShop(shop);
 
-        // 3. Marca la fecha de la venta
-        sale.setSaleDate(s.getSaleDate());
+        // Si la fecha en el DTO es nula, se asigna la fecha actual.
+        sale.setSaleDate(s.getSaleDate() == null ? LocalDate.now() : s.getSaleDate());
 
-        // 4. Mapea los detalles de la venta (SaleDetailsDTO) a entidades SaleProduct
         Set<SaleProduct> saleProducts = new HashSet<>();
-        if (s.getSaleDetails() != null){
-            for (SaleDTO.SaleDetailsDTO detailsDTO : s.getSaleDetails()){
-                Long productIdFromDTO = detailsDTO.getProductId();
-                Product product = productRepositoryInterfaz.findById(productIdFromDTO)
-                        .orElseThrow(() -> new ProductNotFoundException("Producto con ID " + productIdFromDTO + " no encontrado."));
+        if (s.getSaleDetails() != null) {
+            for (SaleDTO.SaleDetailsDTO detailDTO : s.getSaleDetails()) {
+                Product product = productRepositoryInterfaz.findById(detailDTO.getProductId())
+                        .orElseThrow(() -> new ProductNotFoundException("Producto con ID " + detailDTO.getProductId() + " no encontrado."));
 
-                SaleProduct saleProduct = new SaleProduct();
-                saleProduct.setSale(sale);  // Asigna la venta actual
-                saleProduct.setProduct(product);    // Asigna el producto cargado
-                saleProduct.setQuantity(detailsDTO.getQuantity());  // Asigna la cantidad
-
+                // Creamos la entidad que relaciona Venta, Producto y Cantidad
+                SaleProduct saleProduct = new SaleProduct(sale, product, detailDTO.getQuantity());
                 saleProducts.add(saleProduct);
             }
         }
-        sale.setSaleProducts(saleProducts); // Asigna la colección de SaleProduct a la venta
+        sale.setSaleProducts(saleProducts);
 
         return sale;
     }
-}
+    }

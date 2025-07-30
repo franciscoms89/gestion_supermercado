@@ -23,10 +23,7 @@ public class Product {
 
     private String category;
 
-    // TODO [IMPORTANTE]: Cambio de relación con Sale.
-    // Antes: @ManyToMany(mappedBy = "products") private Set<Sale> sales;
-    // Ahora: La relación es a través de la entidad intermedia SaleProduct
-    // Esto permite almacenar la 'cantidad' de productos por venta.
+    //La relación es a través de la entidad intermedia SaleProduct
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

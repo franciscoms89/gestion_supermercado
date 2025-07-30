@@ -24,12 +24,10 @@ public class Sale {
 
     private LocalDate saleDate;
 
-    // TODO [IMPORTANTE]: Cambio de relación con Product.
-    // Antes: @ManyToMany y @JoinTable directamente aquí.
-    // Ahora: La relación es a través de la entidad intermedia SaleProduct.
-    // Esto es NECESARIO para manejar la 'cantidad' de productos en cada venta.
+    //La relación es a través de la entidad intermedia SaleProduct.
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<SaleProduct> saleProducts = new HashSet<>();
+
 }

@@ -1,6 +1,5 @@
 package com.supermercado.gestion_ventas.dtos;
 
-import com.supermercado.gestion_ventas.models.Sale;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
