@@ -1,9 +1,7 @@
 package com.supermercado.gestion_ventas.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -25,5 +23,7 @@ public class Shop {
     private String address;
 
     @OneToMany(mappedBy = "shop", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Sale> sales;
 }

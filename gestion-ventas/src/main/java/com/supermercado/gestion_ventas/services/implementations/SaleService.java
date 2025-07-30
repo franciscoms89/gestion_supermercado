@@ -1,7 +1,5 @@
 package com.supermercado.gestion_ventas.services.implementations;
 
-
-
 import com.supermercado.gestion_ventas.dtos.SaleDTO;
 import com.supermercado.gestion_ventas.exceptions.ProductNotFoundException;
 import com.supermercado.gestion_ventas.exceptions.SaleNotFoundException;
@@ -10,12 +8,12 @@ import com.supermercado.gestion_ventas.models.Product;
 import com.supermercado.gestion_ventas.models.Sale;
 import com.supermercado.gestion_ventas.models.Shop;
 import com.supermercado.gestion_ventas.models.keys.SaleProduct;
-import com.supermercado.gestion_ventas.models.keys.SaleProductId;
 import com.supermercado.gestion_ventas.repositories.ProductRepositoryInterfaz;
 import com.supermercado.gestion_ventas.repositories.SaleRepositoryInterfaz;
 import com.supermercado.gestion_ventas.repositories.ShopRepositoryInterfaz;
 import com.supermercado.gestion_ventas.response.Response;
 import com.supermercado.gestion_ventas.services.interfaces.SaleInterfaz;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -146,7 +143,7 @@ public class SaleService implements SaleInterfaz {
                 saleProducts.add(saleProduct);
             }
         }
-        sale.setSaleProducts(saleProducts); // Asigna el Set de SaleProduct REALES a la venta
+        sale.setSaleProducts(saleProducts); // Asigna la colección de SaleProduct a la venta
 
         return sale;
     }
