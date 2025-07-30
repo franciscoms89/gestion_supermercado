@@ -2,6 +2,7 @@ package com.supermercado.gestion_ventas.services.implementations;
 
 import com.supermercado.gestion_ventas.dtos.SaleDTO;
 import com.supermercado.gestion_ventas.dtos.ShopDTO;
+import com.supermercado.gestion_ventas.exceptions.ShopNotFoundException;
 import com.supermercado.gestion_ventas.models.Sale;
 import com.supermercado.gestion_ventas.models.Shop;
 import com.supermercado.gestion_ventas.repositories.ShopRepositoryInterfaz;
@@ -34,7 +35,7 @@ public class ShopService implements ShopInterfaz {
 
         if(shopList.isEmpty())
         {
-            new Response("No tienes tiendas registradas",
+            new Response("No tienes sucursales registradas",
                     HttpStatus.NO_CONTENT.value(),
                     LocalDate.now());
         }
@@ -44,13 +45,11 @@ public class ShopService implements ShopInterfaz {
 
     @Override
     public ShopDTO create(ShopDTO s) {          //crear tienda
-
-
         try{
             Shop shopRecover = this.converToOBJ(s);
             Shop shopSave = repository.save(shopRecover);
 
-            new Response("Se creo correctamente la  tienda",
+            new Response("Se creó correctamente la sucursal",
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
 
@@ -58,57 +57,42 @@ public class ShopService implements ShopInterfaz {
 
 
         } catch (Exception e) {
-            new Response("No se pudo crear la tienda",
-                    HttpStatus.NO_CONTENT.value(),
-                    LocalDate.now());
-            throw new RuntimeException(e);
+            System.err.println("Error al crear la sucursal: " + e.getMessage());
+            throw new RuntimeException("No se pudo crear la sucursal: " + e.getMessage(), e);
         }
 
     }
 
     @Override
     public Response update(Long id, ShopDTO s) {             //actualizar tienda
-        Optional<Shop> exist = repository.findById(id);
-        if(exist.isPresent()){
-            Shop shop = new Shop();
-            shop.setId(id);
-            shop.setName(s.getName());
-            shop.setCity(s.getCity());
-            Shop SaleObj =this.converToOBJ(s);
-            shop.setSales(SaleObj.getSales());
+       Shop existingShop = repository.findById(id)
+               .orElseThrow(() -> new ShopNotFoundException("Sucursal con ID " + id + " no encontrado para actualizar"));
 
+       existingShop.setName(s.getName());
+       existingShop.setCity(s.getCity());
+       existingShop.setAddress(s.getAddress());
 
-            //actualizar
-            Shop shopUpdate = repository.save(shop);
-            return  new Response("Se actualizo correctamente la tienda" + id,
-                    HttpStatus.ACCEPTED.value(),
-                    LocalDate.now());
-
-        }
-        else
-        {
-            System.err.println("No se pudo actualizar");
-            new Response("No se pudo actualizar la tienda",
-                    HttpStatus.NO_CONTENT.value(),
-                    LocalDate.now());
-        }
-       return  null;
+       Shop shopUpdate = repository.save(existingShop);
+       return new Response("Se actualizó correctamente la sucursal con ID " + id,
+               HttpStatus.ACCEPTED.value(),
+               LocalDate.now());
     }
 
     @Override
     public Response delete(Long id) {   //eliminar tienda
 
+        if (!repository.existsById(id)){
+            throw new ShopNotFoundException("Sucursal con ID " + id + " no encontrada para eliminar.");
+        }
         try {
             repository.deleteById(id);
-            return new Response("se elimino la tienda" + id,
+            return new Response("Se eliminó la sucursal " + id,
                     HttpStatus.ACCEPTED.value(),
                     LocalDate.now());
-        } catch (Exception e) {
-            return new Response("no se pudo eliminar la tienda" + id,
-                    HttpStatus.NO_CONTENT.value(),
-                    LocalDate.now());
+        }catch (Exception e){
+            System.err.println("Error al eliminar la sucursal con ID " + id + ": " + e.getMessage());
+            throw new RuntimeException("No se pudo eliminar la sucursal con ID " + id + ": " + e.getMessage(), e);
         }
-
     }
 
 
@@ -118,6 +102,10 @@ public class ShopService implements ShopInterfaz {
     public ShopDTO convertToDTO(Shop s)          //metodos para mapear OBJ a DTO
     {
         List<SaleDTO> sales = new ArrayList<>();
+
+        if (s.getSales() != null){
+            sales = s.getSales().stream().map(SI::convertToDTO).toList();
+        }
         return new ShopDTO(s.getId(),s.getName(),s.getCity(),s.getAddress(), sales);
     }
 

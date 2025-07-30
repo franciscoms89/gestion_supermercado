@@ -39,6 +39,19 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
 
+    // Mensaje de error para venta no encontrada.
+    @ExceptionHandler(SaleNotFoundException.class)
+    public ResponseEntity<Object> handleSaleNotFoundException(
+            SaleNotFoundException ex, WebRequest request) {
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", ex.getMessage());
+        body.put("path", request.getDescription(false));
+
+        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+    }
+
     // Mensaje de error para fallo inesperado.
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Object> handlerGenericRunTimeException(
