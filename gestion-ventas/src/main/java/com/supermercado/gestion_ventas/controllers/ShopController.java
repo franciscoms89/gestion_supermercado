@@ -1,7 +1,6 @@
 package com.supermercado.gestion_ventas.controllers;
 
 import com.supermercado.gestion_ventas.dtos.ShopDTO;
-import com.supermercado.gestion_ventas.response.Response;
 import com.supermercado.gestion_ventas.services.interfaces.ShopInterfaz;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
