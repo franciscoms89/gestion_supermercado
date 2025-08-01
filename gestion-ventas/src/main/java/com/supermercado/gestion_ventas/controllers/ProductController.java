@@ -21,7 +21,7 @@ public class ProductController {
 
     // GET - Obtener todos los productos en forma de lista
     @GetMapping
-    public ResponseEntity<?> listAll() {
+    public ResponseEntity<List<ProductDTO>> listAll() {
         List<ProductDTO> productList = productService.listAll();
         return ResponseEntity.ok(productList);
     }
