@@ -16,11 +16,8 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
-
     private double price;
-
     private String category;
 
     //La relación es a través de la entidad intermedia SaleProduct
@@ -28,5 +25,4 @@ public class Product {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<SaleProduct> saleProducts = new HashSet<>();
-
 }

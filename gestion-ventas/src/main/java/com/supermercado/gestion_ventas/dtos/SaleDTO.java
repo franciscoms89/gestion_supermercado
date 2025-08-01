@@ -16,7 +16,6 @@ public class SaleDTO {
     private LocalDate saleDate;
     private List<SaleDetailsDTO> saleDetails;
 
-
     // TODO [IMPORTANTE]: Clase interna para los detalles de cada producto en la venta.
     // Esto es crucial para poder enviar la 'cantidad' de cada producto.
     // Corresponde a la información que se mapeará a la nueva entidad SaleProduct.

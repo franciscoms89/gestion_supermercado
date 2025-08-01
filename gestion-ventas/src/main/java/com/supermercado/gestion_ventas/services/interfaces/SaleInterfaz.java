@@ -8,18 +8,11 @@ import java.util.List;
 public interface SaleInterfaz {
 
     SaleDTO register (SaleDTO s);         //registrar compra
-
     List<SaleDTO> listAll(Long shopId, LocalDate saleDate);                //listar compra
-
     void delete(Long id);                //eliminar compra
 
+    // Mapeos DTO y OBJ
 
-    ///Todo: mapear objectos
     SaleDTO convertToDTO(Sale s);                   //metodos para mapear OBJ a DTO
-
     Sale convertToOBJ(SaleDTO s);              //metodos para mapear DTO a OBJ
-
-
-
-
 }

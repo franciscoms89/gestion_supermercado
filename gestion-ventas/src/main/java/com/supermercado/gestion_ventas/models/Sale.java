@@ -29,5 +29,4 @@ public class Sale {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<SaleProduct> saleProducts = new HashSet<>();
-
 }

@@ -20,14 +20,14 @@ public class ShopController {
     ShopInterfaz shopService;
 
     // GET - Obtener todas las sucursales en forma de lista
-    @GetMapping
+   @GetMapping
     public ResponseEntity<List<ShopDTO>> listAll() {
         List<ShopDTO> list = shopService.listAll();
         return ResponseEntity.ok(list);
     }
 
     // POST - Crear una nueva sucursal
-    @PostMapping
+   @PostMapping
     public ResponseEntity<ShopDTO> create(@RequestBody ShopDTO shop) {
         ShopDTO shopCreated = shopService.create(shop);
         return ResponseEntity.status(HttpStatus.CREATED).body(shopCreated);
@@ -39,9 +39,8 @@ public class ShopController {
         ShopDTO updateShop = shopService.update(id, shopToUpdate);
         return ResponseEntity.ok(updateShop);
     }
-
     // DELETE - Eliminar una sucursal
-    @DeleteMapping("/{id}")
+   @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         shopService.delete(id);
         return ResponseEntity.noContent().build();
