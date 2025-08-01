@@ -1,7 +1,7 @@
 package com.supermercado.gestion_ventas.controllers;
 
 import com.supermercado.gestion_ventas.dtos.ShopDTO;
-import com.supermercado.gestion_ventas.response.Response;
+import com.supermercado.gestion_ventas.response.ApiResponse;
 import com.supermercado.gestion_ventas.services.interfaces.ShopInterfaz;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -22,29 +23,52 @@ public class ShopController {
 
     // GET - Obtener todas las sucursales en forma de lista
     @GetMapping
-    public ResponseEntity<List<ShopDTO>> listAll() {
+    public ResponseEntity<?> listAll() {
         List<ShopDTO> list = shopService.listAll();
+        if (list.isEmpty()) {
+            ApiResponse response = new ApiResponse(
+                    "No hay sucursales registradas",
+                    HttpStatus.OK.value(),
+                    LocalDate.now()
+            );
+            return ResponseEntity.ok(response);
+        }
         return ResponseEntity.ok(list);
     }
 
     // POST - Crear una nueva sucursal
     @PostMapping
-    public ResponseEntity<ShopDTO> create(@RequestBody ShopDTO shop) {
+    public ResponseEntity<ApiResponse> create(@RequestBody ShopDTO shop) {
         ShopDTO shopCreated = shopService.create(shop);
-        return ResponseEntity.status(HttpStatus.CREATED).body(shopCreated);
+        ApiResponse response = new ApiResponse(
+                "Sucursal creada exitosamente",
+                HttpStatus.CREATED.value(),
+                LocalDate.now()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // PUT - Actualizar una sucursal existente
     @PutMapping("/{id}")
-    public ResponseEntity<ShopDTO> update(@PathVariable Long id, @RequestBody ShopDTO shopToUpdate) {
+    public ResponseEntity<ApiResponse> update(@PathVariable Long id, @RequestBody ShopDTO shopToUpdate) {
         ShopDTO updateShop = shopService.update(id, shopToUpdate);
-        return ResponseEntity.ok(updateShop);
+        ApiResponse response = new ApiResponse(
+                "Sucursal actualizada exitosamente",
+                HttpStatus.OK.value(),
+                LocalDate.now()
+        );
+        return ResponseEntity.ok(response);
     }
 
     // DELETE - Eliminar una sucursal
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse> delete(@PathVariable Long id) {
         shopService.delete(id);
-        return ResponseEntity.noContent().build();
+        ApiResponse response = new ApiResponse(
+                "Sucursal eliminada exitosamente",
+                HttpStatus.OK.value(),
+                LocalDate.now()
+        );
+        return ResponseEntity.ok(response);
     }
 }
