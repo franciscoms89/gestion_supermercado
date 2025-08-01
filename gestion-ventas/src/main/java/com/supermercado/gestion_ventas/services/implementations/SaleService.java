@@ -51,8 +51,8 @@ public class SaleService implements SaleInterfaz {
             System.err.println("ERROR inesperado al registrar la venta: " + e.getMessage());
             throw new RuntimeException("Error inesperado al registrar la venta.");
         }
-
     }
+
     @Override
     public List<SaleDTO> listAll(Long shopId, LocalDate saleDate) {            //listar compra
         List<Sale> saleList = repository.findAll();
@@ -88,15 +88,14 @@ public class SaleService implements SaleInterfaz {
             System.err.println("ERROR al eliminar la venta con ID " + id + ": " + e.getMessage());
             throw new RuntimeException("No se pudo eliminar la venta con ID " + id);
         }
-
     }
 
+    // Mapeos DTO y OBJ
 
-    ///Todo: mapear objectos
     @Override
     public SaleDTO convertToDTO(Sale s)          //metodos para mapear OBJ a DTO
     {
-            // Mapea los detalles de la venta (productos y cantidades)
+        // Mapea los detalles de la venta (productos y cantidades)
         List<SaleDTO.SaleDetailsDTO> saleDetails = s.getSaleProducts() != null ?
                 s.getSaleProducts().stream()
                         .map(saleProduct -> new SaleDTO.SaleDetailsDTO(
@@ -107,7 +106,7 @@ public class SaleService implements SaleInterfaz {
 
         // Manejo seguro del shopId para evitar NullPointerException
         Long shopId = (s.getShop() != null) ? s.getShop().getId() : null;
-        return new SaleDTO(s.getId(), shopId, s.getSaleDate(),saleDetails);
+        return new SaleDTO(s.getId(), shopId, s.getSaleDate(), saleDetails);
     }
 
     @Override
@@ -137,4 +136,4 @@ public class SaleService implements SaleInterfaz {
 
         return sale;
     }
-    }
+}

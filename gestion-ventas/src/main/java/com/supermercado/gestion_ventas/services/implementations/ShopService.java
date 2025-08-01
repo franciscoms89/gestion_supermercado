@@ -83,36 +83,36 @@ public class ShopService implements ShopInterfaz {
             throw new RuntimeException("Error inesperado al eliminar la sucursal.");
         }
     }
-        /// Todo: mapear objectos
-        @Override
-        public ShopDTO convertToDTO (Shop s){      //metodos para mapear OBJ a DTO
+    // Mapeos DTO y OBJ
 
-            List<SaleDTO> saleDTOS = Collections.emptyList();
+    @Override
+    public ShopDTO convertToDTO(Shop s) {      //metodos para mapear OBJ a DTO
 
-            if (s.getSales() != null) {
-                saleDTOS = s.getSales().stream()
-                        .map(SI::convertToDTO)
-                        .collect(Collectors.toList());
-            }
-            return new ShopDTO(s.getId(), s.getName(), s.getCity(), s.getAddress(), saleDTOS);
+        List<SaleDTO> saleDTOS = Collections.emptyList();
+
+        if (s.getSales() != null) {
+            saleDTOS = s.getSales().stream()
+                    .map(SI::convertToDTO)
+                    .collect(Collectors.toList());
         }
-
-        @Override
-        public Shop convertToOBJ(ShopDTO s){
-            Shop shop = new Shop();
-            shop.setId(s.getId());
-            shop.setName(s.getName());
-            shop.setCity(s.getCity());
-            shop.setAddress(s.getAddress());
-
-            if (s.getSales() != null && !s.getSales().isEmpty()) {
-                // Usamos la variable "SI" también aquí.
-                List<Sale> sales = s.getSales().stream()
-                        .map(SI::convertToOBJ)
-                        .collect(Collectors.toList());
-                shop.setSales(sales);
-            }
-            return shop;
-        }
+        return new ShopDTO(s.getId(), s.getName(), s.getCity(), s.getAddress(), saleDTOS);
     }
 
+    @Override
+    public Shop convertToOBJ(ShopDTO s) {
+        Shop shop = new Shop();
+        shop.setId(s.getId());
+        shop.setName(s.getName());
+        shop.setCity(s.getCity());
+        shop.setAddress(s.getAddress());
+
+        if (s.getSales() != null && !s.getSales().isEmpty()) {
+            // Usamos la variable "SI" también aquí.
+            List<Sale> sales = s.getSales().stream()
+                    .map(SI::convertToOBJ)
+                    .collect(Collectors.toList());
+            shop.setSales(sales);
+        }
+        return shop;
+    }
+}

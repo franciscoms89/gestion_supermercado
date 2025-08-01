@@ -19,5 +19,4 @@ public class SaleProductId implements Serializable {
 
     @Column(name = "product_id")
     private Long productId;
-
 }

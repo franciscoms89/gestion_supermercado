@@ -51,4 +51,3 @@ public class SaleProduct implements Serializable {
             this.id = new SaleProductId(sale.getId(), product.getId());
         }
     }
-

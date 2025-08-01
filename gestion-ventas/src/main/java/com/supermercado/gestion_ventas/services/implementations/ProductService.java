@@ -18,7 +18,6 @@ public class ProductService implements ProductInterfaz {
     @Autowired
     ProductRepositoryInterfaz repository;
 
-
     @Override
     public List<ProductDTO> listAll() {//listar producto
         List<Product> productList = repository.findAll();
@@ -76,10 +75,10 @@ public class ProductService implements ProductInterfaz {
             System.err.println("ERROR: Error al intentar eliminar el producto con ID: " + id + ". Causa: " + e.getMessage());
             throw new RuntimeException("Error inesperado al eliminar el producto.");
         }
-
     }
 
-    /// Todo: mapear objectos
+    // Mapeos de DTO y OBJ
+
     @Override
     public ProductDTO convertToDTO(Product p) {         //metodos para mapear OBJ a DTO
         return new ProductDTO(p.getId(), p.getName(), p.getPrice(), p.getCategory());
