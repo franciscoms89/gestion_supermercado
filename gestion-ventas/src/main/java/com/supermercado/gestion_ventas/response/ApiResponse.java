@@ -9,9 +9,9 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Response {
+public class ApiResponse {
 
     private String message;
-    private int estateCode;
+    private int statusCode;
     private LocalDate date;
 }
