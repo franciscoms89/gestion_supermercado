@@ -19,8 +19,7 @@ INSERT INTO sale (id, sale_date, shop_id) VALUES
 (4, '2025-07-23', 103),
 (5, '2025-07-23', 102);
 
-
-INSERT INTO detalle_venta (sale_id, product_id) VALUES
+INSERT INTO sale_products (sale_id, product_id) VALUES
 (1, 1),
 (1, 2),  
 (2, 3),
