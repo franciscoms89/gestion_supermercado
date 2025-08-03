@@ -19,7 +19,7 @@ public class ShopDTO {
     private String name;
     @JsonProperty("tiendaCiudad")
     private String city;
-    @JsonProperty("tiendaDirección")
+    @JsonProperty("tiendaDireccion")
     private String address;
     @JsonProperty("tiendaListaVentas")
     private List<SaleDTO> sales;
