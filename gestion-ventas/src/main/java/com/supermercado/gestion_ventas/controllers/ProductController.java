@@ -23,7 +23,7 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<List<ProductDTO>> listAll() {
         List<ProductDTO> productList = productService.listAll();
-        return ResponseEntity.ok(productList);
+        return ResponseEntity.status(HttpStatus.OK).body(productList);
     }
 
     // POST - Crear un nuevo producto
@@ -37,13 +37,13 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductDTO> update(@PathVariable Long id, @RequestBody ProductDTO productToUpdate) {
         ProductDTO updateProduct = productService.update(id, productToUpdate);
-        return ResponseEntity.ok(updateProduct);
+        return ResponseEntity.status(HttpStatus.OK).body(updateProduct);
     }
 
     // DELETE - Eliminar un producto
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
