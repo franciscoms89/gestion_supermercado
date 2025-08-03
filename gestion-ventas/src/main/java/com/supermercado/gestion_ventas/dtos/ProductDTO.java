@@ -17,7 +17,7 @@ public class ProductDTO {
     @JsonProperty("productoNombre")
     private String name;
     @JsonProperty("productoPrecio")
-    private double price;
+    private Double price;
     @JsonProperty("productoCategoria")
     private String category;
 }

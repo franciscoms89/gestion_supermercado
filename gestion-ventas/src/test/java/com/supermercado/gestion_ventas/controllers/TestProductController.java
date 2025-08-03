@@ -32,7 +32,7 @@ public class TestProductController {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private ProductRepositoryInterfaz repository;
+    private ProductRepositoryInterfaz productRepository;
 
     private final String URL_ENDPOINT = "/api/productos";
     private final ProductDTO productDTO = new ProductDTO(null, "Pan de Molde", 1.95, "Panadería");
@@ -91,13 +91,13 @@ public class TestProductController {
 
     // Función auxiliar para obtener o crear un producto base y devolver su ID
     private Long getOrCreateProductId() {
-        var all = repository.findAll();
+        var all = productRepository.findAll();
         if (all.isEmpty()) {
             Product newProduct = new Product();
             newProduct.setName("Pan de Molde");
             newProduct.setPrice(1.95);
             newProduct.setCategory("Panadería");
-            return repository.save(newProduct).getId();
+            return productRepository.save(newProduct).getId();
         } else {
             return all.get(0).getId();
         }

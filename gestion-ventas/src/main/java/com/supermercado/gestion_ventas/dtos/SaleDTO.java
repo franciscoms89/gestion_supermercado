@@ -33,6 +33,6 @@ public class SaleDTO {
         @JsonProperty("detallesProductoId")
         private Long productId;
         @JsonProperty("detallesCantidad")
-        private int quantity;
+        private Integer quantity;
     }
 }

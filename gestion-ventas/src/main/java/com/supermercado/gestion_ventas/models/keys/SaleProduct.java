@@ -32,7 +32,7 @@ public class SaleProduct implements Serializable {
     private Product product;
 
     @Column(name = "quantity")
-    private int quantity;
+    private Integer quantity;
 
     public void setSale(Sale sale) {
         this.sale = sale;
@@ -44,7 +44,7 @@ public class SaleProduct implements Serializable {
         }
     }
 
-    public SaleProduct(Sale sale, Product product, int quantity){
+    public SaleProduct(Sale sale, Product product, Integer quantity){
             this.sale = sale;
             this.product = product;
             this.quantity = quantity;

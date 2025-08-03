@@ -25,7 +25,7 @@ public class SaleController {
                                                  @RequestParam(name = "fecha", required = false) LocalDate fechaOferta) {
         // TODO [IMPORTANTE]: variables en español para hacer las búsquedas, ya que los endPoints están en español.
         List<SaleDTO> saleList = saleService.listAll(tiendaId, fechaOferta);
-        return ResponseEntity.ok(saleList);
+        return ResponseEntity.status(HttpStatus.OK).body(saleList);
     }
 
     // POST - Crear una nueva venta
@@ -39,6 +39,6 @@ public class SaleController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         saleService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
