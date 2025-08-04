@@ -12,8 +12,12 @@ public interface ProductInterfaz {
     ProductDTO update(Long id, ProductDTO p);   //crear producto
     void delete(Long id);                //eliminar producto
 
+    ProductDTO productToSelling();   // producto mas vendido
+
     // Mapeos DTO y OBJ
 
     ProductDTO convertToDTO(Product p);          //metodos para mapear OBJ a DTO
     Product convertToOBJ(ProductDTO p);              //metodos para mapear DTO a OBJ
+
+
 }

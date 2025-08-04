@@ -26,6 +26,13 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }
 
+    //GET - Obtener producto mas vendido
+    @GetMapping("/estadidticas/producto-mas-vendido")
+    public ResponseEntity ProductDTO() {
+         ProductDTO topSellingProduct = productService.productToSelling();
+         return ResponseEntity.status(HttpStatus.OK).body(topSellingProduct);
+    }
+
     // POST - Crear un nuevo producto
     @PostMapping("/productos")
     public ResponseEntity<ProductDTO> create(@RequestBody ProductDTO product) {

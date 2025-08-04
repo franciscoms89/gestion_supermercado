@@ -28,7 +28,7 @@ public class SaleService implements SaleInterfaz {
 
     //relaciones con otros servicios
     @Autowired
-    SaleRepositoryInterfaz repositorySales;
+    SaleRepositoryInterfaz repository;
 
     @Autowired
     private ShopRepositoryInterfaz shopRepositoryInterfaz;
@@ -40,7 +40,7 @@ public class SaleService implements SaleInterfaz {
     public SaleDTO register(SaleDTO s) {    //registrar venta
         try {
             Sale saleEntity = this.convertToOBJ(s);
-            Sale saleSaved = repositorySales.save(saleEntity);
+            Sale saleSaved = repository.save(saleEntity);
             System.out.println("INFO: Venta registrada con éxito con ID: " + saleSaved.getId());
             return convertToDTO(saleSaved);
         } catch (ShopNotFoundException | ProductNotFoundException e) {
@@ -55,20 +55,20 @@ public class SaleService implements SaleInterfaz {
 
     @Override
     public List<SaleDTO> listAll(Long shopId, LocalDate saleDate) {            //listar compra
-        List<Sale> saleList = repositorySales.findAll();
+        List<Sale> saleList = repository.findAll();
         // Lógica de filtrado que busca en la base de datos según los parámetros recibidos.
         if (shopId != null && saleDate != null) {
             System.out.println("INFO: Buscando ventas por tienda " + shopId + " y fecha " + saleDate);
-            saleList = repositorySales.findByShopIdAndSaleDate(shopId, saleDate);
+            saleList = repository.findByShopIdAndSaleDate(shopId, saleDate);
         } else if (shopId != null) {
             System.out.println("INFO: Buscando ventas por tienda " + shopId);
-            saleList = repositorySales.findByShopId(shopId);
+            saleList = repository.findByShopId(shopId);
         } else if (saleDate != null) {
             System.out.println("INFO: Buscando ventas por fecha " + saleDate);
-            saleList = repositorySales.findBySaleDate(saleDate);
+            saleList = repository.findBySaleDate(saleDate);
         } else {
             System.out.println("INFO: Buscando todas las ventas.");
-            saleList = repositorySales.findAll();
+            saleList = repository.findAll();
         }
 
         return saleList.stream()
@@ -78,11 +78,11 @@ public class SaleService implements SaleInterfaz {
 
     @Override
     public void delete(Long id) {               //borrar compra
-        if (!repositorySales.existsById(id)) {
+        if (!repository.existsById(id)) {
             throw new SaleNotFoundException("Venta con ID " + id + " no encontrada para eliminar.");
         }
         try {
-            repositorySales.deleteById(id);
+            repository.deleteById(id);
             System.out.println("INFO: Se eliminó la venta con ID " + id);
         } catch (Exception e) {
             System.err.println("ERROR al eliminar la venta con ID " + id + ": " + e.getMessage());

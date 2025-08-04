@@ -3,12 +3,15 @@ package com.supermercado.gestion_ventas.services.implementations;
 import com.supermercado.gestion_ventas.dtos.ProductDTO;
 import com.supermercado.gestion_ventas.exceptions.ProductNotFoundException;
 import com.supermercado.gestion_ventas.models.Product;
+import com.supermercado.gestion_ventas.models.keys.SaleProduct;
 import com.supermercado.gestion_ventas.repositories.ProductRepositoryInterfaz;
+import com.supermercado.gestion_ventas.repositories.SaleProductRepositoryInterfaz;
 import com.supermercado.gestion_ventas.services.interfaces.ProductInterfaz;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,11 +19,14 @@ import java.util.stream.Collectors;
 public class ProductService implements ProductInterfaz {
 
     @Autowired
-    ProductRepositoryInterfaz repository;
+    ProductRepositoryInterfaz repositoryProduct;
+
+    @Autowired
+    SaleProductRepositoryInterfaz repositorySaleProduct;
 
     @Override
     public List<ProductDTO> listAll() {//listar producto
-        List<Product> productList = repository.findAll();
+        List<Product> productList = repositoryProduct.findAll();
         if (productList.isEmpty()) {
             System.out.println("INFO: No hay productos registrados en la base de datos.");
         }
@@ -30,10 +36,21 @@ public class ProductService implements ProductInterfaz {
     }
 
     @Override
+    public ProductDTO productToSelling() {       //producto mas vendido
+        List<SaleProduct> product = repositorySaleProduct.findAll();
+
+        SaleProduct saleProductTop = product.stream()
+                .max(Comparator.comparing(SaleProduct::getQuantity)).orElse(null);
+
+        Product productTop = saleProductTop.getProduct();
+        return convertToDTO(productTop);
+    }
+
+    @Override
     public ProductDTO create(ProductDTO p) { //crear producto
         try {
             Product productRecover = this.convertToOBJ(p);
-            Product productSave = repository.save(productRecover);
+            Product productSave = repositoryProduct.save(productRecover);
             System.out.println("INFO: Producto creado con éxito con ID: " + productSave.getId());
             return this.convertToDTO(productSave);
         }catch (Exception e){
@@ -46,7 +63,7 @@ public class ProductService implements ProductInterfaz {
     public ProductDTO update(Long id, ProductDTO p) {         // actualizar Produto
 
         // 1. Buscar el producto por ID. Si no existe, lanzar ProductNotFoundException.
-        Product existingProduct = repository.findById(id)
+        Product existingProduct = repositoryProduct.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Producto con ID " + id + " no econtrado para actualizar."));
 
         // 2. Actualizar las propiedades del producto existente.
@@ -55,7 +72,7 @@ public class ProductService implements ProductInterfaz {
         existingProduct.setCategory(p.getCategory());
 
         // 3. Guardar el producto actualizado
-        Product updateProduct = repository.save(existingProduct);
+        Product updateProduct = repositoryProduct.save(existingProduct);
         System.out.println("INFO: Producto con ID " + updateProduct.getId() + " actualizado correctamente.");
         return convertToDTO (updateProduct);
     }
@@ -64,18 +81,19 @@ public class ProductService implements ProductInterfaz {
     public void delete(Long id) {       //borrar producto
 
         // Verifica si el producto existe antes de intentar borrarlo.
-        if (!repository.existsById(id)) {
+        if (!repositoryProduct.existsById(id)) {
             // Si no existe, lanza la excepción ProductNotFoundException
             throw new ProductNotFoundException("Producto con ID " + id + " no encontrado para eliminar.");
         }
         try {
-            repository.deleteById(id);
+            repositoryProduct.deleteById(id);
             System.out.println("INFO: Producto con ID " + id + " eliminado correctamente.");
         }catch (Exception e){
             System.err.println("ERROR: Error al intentar eliminar el producto con ID: " + id + ". Causa: " + e.getMessage());
             throw new RuntimeException("Error inesperado al eliminar el producto.");
         }
     }
+
 
     // Mapeos de DTO y OBJ
 
