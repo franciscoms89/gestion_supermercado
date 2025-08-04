@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/sucursales")
+@RequestMapping("/api")
 public class ShopController {
 
     // IoC
@@ -20,27 +20,27 @@ public class ShopController {
     ShopInterfaz shopService;
 
     // GET - Obtener todas las sucursales en forma de lista
-   @GetMapping
+   @GetMapping("/sucursales")
     public ResponseEntity<List<ShopDTO>> listAll() {
         List<ShopDTO> list = shopService.listAll();
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
     // POST - Crear una nueva sucursal
-   @PostMapping
+   @PostMapping("/sucursales")
     public ResponseEntity<ShopDTO> create(@RequestBody ShopDTO shop) {
         ShopDTO shopCreated = shopService.create(shop);
         return ResponseEntity.status(HttpStatus.CREATED).body(shopCreated);
     }
 
     // PUT - Actualizar una sucursal existente
-    @PutMapping("/{id}")
+    @PutMapping("/sucursales/{id}")
     public ResponseEntity<ShopDTO> update(@PathVariable Long id, @RequestBody ShopDTO shopToUpdate) {
         ShopDTO updateShop = shopService.update(id, shopToUpdate);
         return ResponseEntity.status(HttpStatus.OK).body(updateShop);
     }
     // DELETE - Eliminar una sucursal
-   @DeleteMapping("/{id}")
+   @DeleteMapping("/sucursales/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         shopService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

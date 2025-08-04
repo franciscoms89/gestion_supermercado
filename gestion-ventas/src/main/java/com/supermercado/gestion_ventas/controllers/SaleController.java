@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/ventas")
+@RequestMapping("/api")
 public class SaleController {
 
     // IoC
@@ -20,7 +20,7 @@ public class SaleController {
     SaleInterfaz saleService;
 
     // GET - Obtener todas las ventas con posibles filtrados
-    @GetMapping
+    @GetMapping("/ventas")
     public ResponseEntity<List<SaleDTO>> listAll(@RequestParam(name = "tiendaId", required = false) Long tiendaId,
                                                  @RequestParam(name = "fecha", required = false) LocalDate fechaOferta) {
         // TODO [IMPORTANTE]: variables en español para hacer las búsquedas, ya que los endPoints están en español.
@@ -29,14 +29,14 @@ public class SaleController {
     }
 
     // POST - Crear una nueva venta
-    @PostMapping
+    @PostMapping("/ventas")
     public ResponseEntity<SaleDTO> create(@RequestBody SaleDTO sale) {
         SaleDTO saleCreated = saleService.register(sale);
         return ResponseEntity.status(HttpStatus.CREATED).body(saleCreated);
     }
 
     // DELETE - Eliminar una venta
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/ventas/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         saleService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
