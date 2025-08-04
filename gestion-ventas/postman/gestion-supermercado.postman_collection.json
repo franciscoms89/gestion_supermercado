@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "69da7c2f-bbc9-469b-b373-905fd6182858",
+		"_postman_id": "88b3df26-cc9c-44ea-a036-d4372f2acbfc",
 		"name": "gestion-supermercado",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "45847594",
-		"_collection_link": "https://franciscomorcillo.postman.co/workspace/Francisco-Morcillo's-Workspace~5543257b-eccb-4838-8c0a-fd1b4635d2b3/collection/45847594-69da7c2f-bbc9-469b-b373-905fd6182858?action=share&source=collection_link&creator=45847594"
+		"_exporter_id": "45744583",
+		"_collection_link": "https://iagorivas.postman.co/workspace/fe6b0806-457a-4f35-8d81-1073dc5d360d/collection/45744583-88b3df26-cc9c-44ea-a036-d4372f2acbfc?action=share&source=collection_link&creator=45744583"
 	},
 	"item": [
 		{
@@ -89,6 +89,14 @@
 								"1"
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Producto mas vendido",
+					"request": {
+						"method": "GET",
+						"header": []
 					},
 					"response": []
 				}
