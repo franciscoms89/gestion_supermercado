@@ -1,4 +1,4 @@
-package com.supermercado.gestion_ventas.documentacion;
+package com.supermercado.gestion_ventas.documentation;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
