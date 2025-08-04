@@ -29,4 +29,8 @@ public class Sale {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<SaleProduct> saleProducts = new HashSet<>();
+
+    // Todas las nuevas ventas las crea como activas
+    @Column(name = "is_active")
+    private boolean active = true;
 }

@@ -55,20 +55,21 @@ public class SaleService implements SaleInterfaz {
 
     @Override
     public List<SaleDTO> listAll(Long shopId, LocalDate saleDate) {            //listar compra
-        List<Sale> saleList = repository.findAll();
-        // Lógica de filtrado que busca en la base de datos según los parámetros recibidos.
+        List<Sale> saleList;
+
+        // Lógica de filtrado
         if (shopId != null && saleDate != null) {
-            System.out.println("INFO: Buscando ventas por tienda " + shopId + " y fecha " + saleDate);
-            saleList = repository.findByShopIdAndSaleDate(shopId, saleDate);
+            System.out.println("INFO: Buscando ventas activas por tienda " + shopId + " y fecha " + saleDate);
+            saleList = repository.findByShopIdAndSaleDateAndActiveTrue(shopId, saleDate);
         } else if (shopId != null) {
-            System.out.println("INFO: Buscando ventas por tienda " + shopId);
-            saleList = repository.findByShopId(shopId);
+            System.out.println("INFO: Buscando ventas activas por tienda " + shopId);
+            saleList = repository.findByShopIdAndActiveTrue(shopId);
         } else if (saleDate != null) {
-            System.out.println("INFO: Buscando ventas por fecha " + saleDate);
-            saleList = repository.findBySaleDate(saleDate);
+            System.out.println("INFO: Buscando ventas activas por fecha " + saleDate);
+            saleList = repository.findBySaleDateAndActiveTrue(saleDate);
         } else {
-            System.out.println("INFO: Buscando todas las ventas.");
-            saleList = repository.findAll();
+            System.out.println("INFO: Buscando todas las ventas activas.");
+            saleList = repository.findAllByActiveTrue();
         }
 
         return saleList.stream()
@@ -78,16 +79,18 @@ public class SaleService implements SaleInterfaz {
 
     @Override
     public void delete(Long id) {               //borrar compra
-        if (!repository.existsById(id)) {
-            throw new SaleNotFoundException("Venta con ID " + id + " no encontrada para eliminar.");
-        }
-        try {
-            repository.deleteById(id);
-            System.out.println("INFO: Se eliminó la venta con ID " + id);
-        } catch (Exception e) {
-            System.err.println("ERROR al eliminar la venta con ID " + id + ": " + e.getMessage());
-            throw new RuntimeException("No se pudo eliminar la venta con ID " + id);
-        }
+        // 1. Buscamos la venta. Si no existe, la excepción se lanza.
+        Sale saleToDelete = repository.findById(id)
+                .orElseThrow(() -> new SaleNotFoundException("Venta con ID " + id + " no encontrada para eliminar."));
+
+        // 2. Cambiamos el estado a inactivo.
+        saleToDelete.setActive(false);
+
+        // 3. Guardamos la venta con su nuevo estado.
+        repository.save(saleToDelete);
+
+        System.out.println("INFO: Venta con ID " + id + " marcada como inactiva (borrado lógico).");
+
     }
 
     // Mapeos DTO y OBJ

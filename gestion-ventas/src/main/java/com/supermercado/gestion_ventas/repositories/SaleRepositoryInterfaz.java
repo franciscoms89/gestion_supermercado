@@ -10,12 +10,13 @@ import java.util.List;
 @Repository
 public interface SaleRepositoryInterfaz extends JpaRepository<Sale, Long> {
 
-    // Buscar por ID de tienda Y fecha de venta
-    List<Sale> findByShopIdAndSaleDate(Long shopId, LocalDate saleDate);
+    // Busca todas las ventas activas
+    List<Sale> findAllByActiveTrue();
 
-    // Buscar solo por ID de tienda
-    List<Sale> findByShopId(Long shopId);
+    // Nuevos metodos que filtran por "active = true"
+    List<Sale> findByShopIdAndActiveTrue(Long shopId);
 
-    // Buscar solo por fecha de venta
-    List<Sale> findBySaleDate(LocalDate saleDate);
+    List<Sale> findBySaleDateAndActiveTrue(LocalDate saleDate);
+
+    List<Sale> findByShopIdAndSaleDateAndActiveTrue(Long shopId, LocalDate saleDate);
 }
