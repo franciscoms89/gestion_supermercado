@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,13 +37,17 @@ public class ProductService implements ProductInterfaz {
     }
 
     @Override
-    public ProductDTO productToSelling() {       //producto mas vendido
+    public ProductDTO productTopSelling() {       //producto más vendido
         List<SaleProduct> product = repositorySaleProduct.findAll();
-
-        SaleProduct saleProductTop = product.stream()
-                .max(Comparator.comparing(SaleProduct::getQuantity)).orElse(null);
-
-        Product productTop = saleProductTop.getProduct();
+        Optional <SaleProduct> saleProductTop = product.stream()
+                .max(Comparator.comparing(SaleProduct::getQuantity));
+        if (saleProductTop.isEmpty()){
+            throw new ProductNotFoundException("INFO: No hay ventas registradas.");
+        }
+        Product productTop = saleProductTop.get().getProduct();
+        if (productTop == null) {
+            throw new ProductNotFoundException("INFO: El producto más vendido no está asociado correctamente.");
+        }
         return convertToDTO(productTop);
     }
 
@@ -93,7 +98,6 @@ public class ProductService implements ProductInterfaz {
             throw new RuntimeException("Error inesperado al eliminar el producto.");
         }
     }
-
 
     // Mapeos de DTO y OBJ
 

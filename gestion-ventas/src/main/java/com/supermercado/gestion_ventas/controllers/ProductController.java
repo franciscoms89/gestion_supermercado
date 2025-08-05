@@ -26,11 +26,11 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(productList);
     }
 
-    //GET - Obtener producto mas vendido
-    @GetMapping("/estadidticas/producto-mas-vendido")
-    public ResponseEntity ProductDTO() {
-         ProductDTO topSellingProduct = productService.productToSelling();
-         return ResponseEntity.status(HttpStatus.OK).body(topSellingProduct);
+    //GET - Obtener producto más vendido
+    @GetMapping("/estadisticas/producto-mas-vendido")
+    public ResponseEntity<ProductDTO> topSellingProduct() {
+        ProductDTO topSellingProduct = productService.productTopSelling();
+        return ResponseEntity.status(HttpStatus.OK).body(topSellingProduct);
     }
 
     // POST - Crear un nuevo producto

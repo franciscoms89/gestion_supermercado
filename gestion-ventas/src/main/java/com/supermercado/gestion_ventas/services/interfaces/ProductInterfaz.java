@@ -11,8 +11,7 @@ public interface ProductInterfaz {
     ProductDTO create(ProductDTO p);   //crear producto
     ProductDTO update(Long id, ProductDTO p);   //crear producto
     void delete(Long id);                //eliminar producto
-
-    ProductDTO productToSelling();   // producto mas vendido
+    ProductDTO productTopSelling();   // producto más vendido
 
     // Mapeos DTO y OBJ
 
