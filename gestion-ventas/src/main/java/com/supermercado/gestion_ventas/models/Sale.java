@@ -32,5 +32,5 @@ public class Sale {
 
     // Todas las nuevas ventas las crea como activas
     @Column(name = "is_active")
-    private boolean active = true;
+    private Boolean active = true;
 }

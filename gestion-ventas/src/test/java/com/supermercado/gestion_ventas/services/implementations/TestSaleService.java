@@ -151,7 +151,7 @@ public class TestSaleService {
 
         service.delete(saleId);
 
-        assertThat(sale.isActive()).isFalse();
+        assertThat(sale.getActive()).isFalse();
     }
 
     @Test

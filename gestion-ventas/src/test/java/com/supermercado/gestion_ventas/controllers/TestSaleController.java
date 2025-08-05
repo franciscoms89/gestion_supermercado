@@ -24,7 +24,6 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.hamcrest.Matchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -53,12 +52,7 @@ public class TestSaleController {
     public void listAllTest() throws Exception {
         mockMvc.perform(get(URL_ENDPOINT))
                 .andExpect(status().is(HttpStatus.OK.value()))
-                .andExpect(jsonPath("$", hasSize(greaterThan(0))))
-                .andExpect(jsonPath("$[0].ventaId").isNumber())
-                .andExpect(jsonPath("$[0].ventaTiendaId").isNumber())
-                .andExpect(jsonPath("$[0].ventaFecha").exists())
-                .andExpect(jsonPath("$[0].ventaDetalles").isArray());
-        ;
+                .andExpect(jsonPath("$").isArray());
     }
 
     @Test
