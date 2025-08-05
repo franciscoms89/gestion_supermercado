@@ -33,13 +33,13 @@ public class TestSaleService {
     private SaleService service;
 
     @Mock
-    private SaleRepositoryInterfaz repository;
+    private SaleRepositoryInterfaz repositorySale;
 
     @Mock
-    private ShopRepositoryInterfaz shopRepositoryInterfaz;
+    private ShopRepositoryInterfaz repositoryShop;
 
     @Mock
-    private ProductRepositoryInterfaz productRepositoryInterfaz;
+    private ProductRepositoryInterfaz repositoryProduct;
 
     @Test
     @DisplayName("=== Listar ventas sin filtros ===")
@@ -47,7 +47,7 @@ public class TestSaleService {
         Shop shop = new Shop(1L, "Sucursal A", null, null, List.of());
         Sale sale = new Sale(10L, shop, LocalDate.now(), new HashSet<>(), true);
 
-        when(repository.findAllByActiveTrue()).thenReturn(List.of(sale));
+        when(repositorySale.findAllByActiveTrue()).thenReturn(List.of(sale));
 
         List<SaleDTO> result = service.listAll(null, null);
 
@@ -64,7 +64,7 @@ public class TestSaleService {
         Shop shop = new Shop(shopId, "Sucursal A", null, null, List.of());
         Sale sale = new Sale(20L, shop, saleDate, new HashSet<>(), true);
 
-        when(repository.findByShopIdAndSaleDateAndActiveTrue(shopId, saleDate)).thenReturn(List.of(sale));
+        when(repositorySale.findByShopIdAndSaleDateAndActiveTrue(shopId, saleDate)).thenReturn(List.of(sale));
 
         List<SaleDTO> result = service.listAll(shopId, saleDate);
 
@@ -88,8 +88,8 @@ public class TestSaleService {
         SaleDTO saleDTO = new SaleDTO(null, shopId, saleDate, List.of(detailDTO));
 
         // Mock para shop y product encontrados
-        when(shopRepositoryInterfaz.findById(shopId)).thenReturn(Optional.of(shop));
-        when(productRepositoryInterfaz.findById(productId)).thenReturn(Optional.of(product));
+        when(repositoryShop.findById(shopId)).thenReturn(Optional.of(shop));
+        when(repositoryProduct.findById(productId)).thenReturn(Optional.of(product));
 
         // Para guardar la venta
         Sale saleToSave = service.convertToOBJ(saleDTO);
@@ -99,7 +99,7 @@ public class TestSaleService {
         saleSaved.setSaleDate(saleDate);
         saleSaved.setSaleProducts(saleToSave.getSaleProducts());
 
-        when(repository.save(saleToSave)).thenReturn(saleSaved);
+        when(repositorySale.save(saleToSave)).thenReturn(saleSaved);
 
         SaleDTO result = service.register(saleDTO);
 
@@ -118,7 +118,7 @@ public class TestSaleService {
         Long shopId = 99L;
         SaleDTO saleDTO = new SaleDTO(null, shopId, LocalDate.now(), List.of());
 
-        when(shopRepositoryInterfaz.findById(shopId)).thenReturn(Optional.empty());
+        when(repositoryShop.findById(shopId)).thenReturn(Optional.empty());
 
         assertThrows(ShopNotFoundException.class, () -> service.register(saleDTO));
     }
@@ -133,8 +133,8 @@ public class TestSaleService {
         SaleDTO.SaleDetailsDTO detailDTO = new SaleDTO.SaleDetailsDTO(productId, 3);
         SaleDTO saleDTO = new SaleDTO(null, shopId, LocalDate.now(), List.of(detailDTO));
 
-        when(shopRepositoryInterfaz.findById(shopId)).thenReturn(Optional.of(shop));
-        when(productRepositoryInterfaz.findById(productId)).thenReturn(Optional.empty());
+        when(repositoryShop.findById(shopId)).thenReturn(Optional.of(shop));
+        when(repositoryProduct.findById(productId)).thenReturn(Optional.empty());
 
         assertThrows(ProductNotFoundException.class, () -> service.register(saleDTO));
     }
@@ -146,8 +146,8 @@ public class TestSaleService {
         Shop shop = new Shop(1L, "Sucursal", null, null, List.of());
         Sale sale = new Sale(saleId, shop, LocalDate.now(), new HashSet<>(), true);
 
-        when(repository.findById(saleId)).thenReturn(Optional.of(sale));
-        when(repository.save(sale)).thenReturn(sale);
+        when(repositorySale.findById(saleId)).thenReturn(Optional.of(sale));
+        when(repositorySale.save(sale)).thenReturn(sale);
 
         service.delete(saleId);
 
@@ -159,7 +159,7 @@ public class TestSaleService {
     void deleteFailSaleNotFound() {
         Long missingId = 999L;
 
-        when(repository.findById(missingId)).thenReturn(Optional.empty());
+        when(repositorySale.findById(missingId)).thenReturn(Optional.empty());
 
         assertThrows(SaleNotFoundException.class, () -> service.delete(missingId));
     }

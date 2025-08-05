@@ -36,7 +36,7 @@ public class TestProductService {
     // Pruebas Unitarias
     @Test
     @DisplayName("=== Método para buscar todos los productos de forma exitosa ===")
-    void listAll() {
+    void listAllSuccess() {
         // Creamos una lista ficticia
         List<Product> productList = List.of(
                 new Product(1L, "Ternera", 4.85, "Carnicería", new HashSet<>()),
@@ -66,7 +66,7 @@ public class TestProductService {
 
     @Test
     @DisplayName("=== Método para crear un producto de forma exitosa ===")
-    void create() {
+    void createSuccess() {
         // Creamos los productos ficticios
         ProductDTO productDTO = new ProductDTO(null, "Pan", 0.75, "Panadería");
         // El objeto que se espera que se construya internamente en el service (id null)
