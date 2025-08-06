@@ -74,7 +74,6 @@ public class TestSaleController {
         Long saleId = getOrCreateSaleId();
         mockMvc.perform(delete(URL_ENDPOINT + "/" + saleId))
                 .andExpect(status().isNoContent());
-
     }
 
     // Función auxiliar para obtener o crear una venta base y devolver su ID

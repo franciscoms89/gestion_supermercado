@@ -2,6 +2,7 @@ package com.supermercado.gestion_ventas.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.util.List;
 
 @Entity

@@ -29,7 +29,7 @@ public class SaleDTO {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class SaleDetailsDTO{
+    public static class SaleDetailsDTO {
         @JsonProperty("detallesProductoId")
         private Long productId;
         @JsonProperty("detallesCantidad")
