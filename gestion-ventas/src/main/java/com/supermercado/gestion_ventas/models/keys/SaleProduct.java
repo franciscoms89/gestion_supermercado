@@ -37,8 +37,6 @@ public class SaleProduct implements Serializable {
     public void setSale(Sale sale) {
         this.sale = sale;
         this.id = new SaleProductId();
-        {
-        }
         if (sale != null && sale.getId() != null) {
             this.id.setSaleId(sale.getId());
         }

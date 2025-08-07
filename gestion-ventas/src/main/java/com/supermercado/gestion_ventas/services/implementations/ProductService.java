@@ -2,15 +2,19 @@ package com.supermercado.gestion_ventas.services.implementations;
 
 import com.supermercado.gestion_ventas.dtos.ProductDTO;
 import com.supermercado.gestion_ventas.exceptions.ProductNotFoundException;
+import com.supermercado.gestion_ventas.exceptions.ServiceException;
 import com.supermercado.gestion_ventas.models.Product;
 import com.supermercado.gestion_ventas.models.keys.SaleProduct;
 import com.supermercado.gestion_ventas.repositories.ProductRepositoryInterfaz;
 import com.supermercado.gestion_ventas.repositories.SaleProductRepositoryInterfaz;
 import com.supermercado.gestion_ventas.services.interfaces.ProductInterfaz;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.sql.rowset.serial.SerialException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +22,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProductService implements ProductInterfaz {
+
+    private static final Logger log = LoggerFactory.getLogger(ProductService.class);
 
     @Autowired
     ProductRepositoryInterfaz repositoryProduct;
@@ -29,11 +35,11 @@ public class ProductService implements ProductInterfaz {
     public List<ProductDTO> listAll() {//listar producto
         List<Product> productList = repositoryProduct.findAll();
         if (productList.isEmpty()) {
-            System.out.println("INFO: No hay productos registrados en la base de datos.");
+            log.info("INFO: No hay productos registrados en la base de datos.");
         }
         return productList.stream()
                 .map(this::convertToDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -56,11 +62,11 @@ public class ProductService implements ProductInterfaz {
         try {
             Product productRecover = this.convertToOBJ(p);
             Product productSave = repositoryProduct.save(productRecover);
-            System.out.println("INFO: Producto creado con éxito con ID: " + productSave.getId());
+            log.info("Producto creado con éxito con ID: {}", productSave.getId());
             return this.convertToDTO(productSave);
         } catch (Exception e) {
-            System.err.println("ERROR: Error al intentar registrar el producto '" + p.getName() + "'. Causa: " + e.getMessage());
-            throw new RuntimeException("Error inesperado al registrar el producto.");
+            log.error("Error al intentar registrar el producto '{}'", p.getName(), e);
+            throw new ServiceException("Error inesperado al registrar el producto.", e);
         }
     }
 
@@ -78,7 +84,7 @@ public class ProductService implements ProductInterfaz {
 
         // 3. Guardar el producto actualizado
         Product updateProduct = repositoryProduct.save(existingProduct);
-        System.out.println("INFO: Producto con ID " + updateProduct.getId() + " actualizado correctamente.");
+        log.info("Producto con ID '{}' actualizado correctamente.",updateProduct.getId());
         return convertToDTO(updateProduct);
     }
 
@@ -92,10 +98,11 @@ public class ProductService implements ProductInterfaz {
         }
         try {
             repositoryProduct.deleteById(id);
-            System.out.println("INFO: Producto con ID " + id + " eliminado correctamente.");
+            log.info("Producto con ID {} eliminado correctamente.", id);
         } catch (Exception e) {
-            System.err.println("ERROR: Error al intentar eliminar el producto con ID: " + id + ". Causa: " + e.getMessage());
-            throw new RuntimeException("Error inesperado al eliminar el producto.");
+            // Forma ideal
+            log.error("Error al intentar eliminar el producto con ID {}", id, e);
+            throw new ServiceException("Error inesperado al eliminar el producto.", e);
         }
     }
 

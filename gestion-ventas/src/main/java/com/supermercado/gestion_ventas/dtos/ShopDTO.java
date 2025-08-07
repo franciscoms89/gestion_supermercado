@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ShopDTO {
 
-    // TODO: nombres visibles al cliente en español al estar los endPoints en español
+    // Nombres visibles al cliente en español al estar los endPoints en español
     @JsonProperty("tiendaId")
     private Long id;
     @JsonProperty("tiendaNombre")

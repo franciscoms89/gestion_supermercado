@@ -3,6 +3,7 @@ package com.supermercado.gestion_ventas.services.implementations;
 import com.supermercado.gestion_ventas.dtos.SaleDTO;
 import com.supermercado.gestion_ventas.exceptions.ProductNotFoundException;
 import com.supermercado.gestion_ventas.exceptions.SaleNotFoundException;
+import com.supermercado.gestion_ventas.exceptions.ServiceException;
 import com.supermercado.gestion_ventas.exceptions.ShopNotFoundException;
 import com.supermercado.gestion_ventas.models.Product;
 import com.supermercado.gestion_ventas.models.Sale;
@@ -14,6 +15,8 @@ import com.supermercado.gestion_ventas.repositories.ShopRepositoryInterfaz;
 
 import com.supermercado.gestion_ventas.services.interfaces.SaleInterfaz;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class SaleService implements SaleInterfaz {
+
+    private static final Logger log = LoggerFactory.getLogger(SaleService.class);
 
     //relaciones con otros servicios
     @Autowired
@@ -41,15 +46,13 @@ public class SaleService implements SaleInterfaz {
         try {
             Sale saleEntity = this.convertToOBJ(s);
             Sale saleSaved = repository.save(saleEntity);
-            System.out.println("INFO: Venta registrada con éxito con ID: " + saleSaved.getId());
+            log.info("Venta registrada con éxito con ID {}",saleSaved.getId());
             return convertToDTO(saleSaved);
         } catch (ShopNotFoundException | ProductNotFoundException e) {
-            System.err.println("ERROR de negocio al registrar venta: " + e.getMessage());
-            // Relanzamos las excepciones para que el GlobalExceptionHandler las capture.
             throw e;
         } catch (Exception e) {
-            System.err.println("ERROR inesperado al registrar la venta: " + e.getMessage());
-            throw new RuntimeException("Error inesperado al registrar la venta.");
+            log.error("Error inesperado al registrar la venta: ", e);
+            throw new ServiceException("Error inesperado al registrar la venta.", e);
         }
     }
 
@@ -59,22 +62,22 @@ public class SaleService implements SaleInterfaz {
 
         // Lógica de filtrado
         if (shopId != null && saleDate != null) {
-            System.out.println("INFO: Buscando ventas activas por tienda " + shopId + " y fecha " + saleDate);
+            log.info("Buscando ventas activas por tienda {} y fecha {}", shopId, saleDate);
             saleList = repository.findByShopIdAndSaleDateAndActiveTrue(shopId, saleDate);
         } else if (shopId != null) {
-            System.out.println("INFO: Buscando ventas activas por tienda " + shopId);
+            log.info("Buscando ventas activas por tienda {}", shopId);
             saleList = repository.findByShopIdAndActiveTrue(shopId);
         } else if (saleDate != null) {
-            System.out.println("INFO: Buscando ventas activas por fecha " + saleDate);
+            log.info("Buscando ventas activas por fecha {}", saleDate);
             saleList = repository.findBySaleDateAndActiveTrue(saleDate);
         } else {
-            System.out.println("INFO: Buscando todas las ventas activas.");
+            log.info("Buscando todas las ventas activas.");
             saleList = repository.findAllByActiveTrue();
         }
 
         return saleList.stream()
                 .map(this::convertToDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -89,7 +92,7 @@ public class SaleService implements SaleInterfaz {
         // 3. Guardamos la venta con su nuevo estado.
         repository.save(saleToDelete);
 
-        System.out.println("INFO: Venta con ID " + id + " marcada como inactiva (borrado lógico).");
+        log.info("INFO: Venta con ID {} marcada como inactiva (borrado lógico).", id);
 
     }
 

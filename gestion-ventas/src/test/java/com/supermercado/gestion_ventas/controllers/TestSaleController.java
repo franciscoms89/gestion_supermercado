@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
-public class TestSaleController {
+class TestSaleController {
 
     @Autowired
     private MockMvc mockMvc;
@@ -63,7 +63,7 @@ public class TestSaleController {
 
     @Test
     @DisplayName("=== Listar todas las ventas ===")
-    public void listAllTest() throws Exception {
+    void listAllTest() throws Exception {
         mockMvc.perform(get(URL_ENDPOINT))
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(jsonPath("$").isArray());
@@ -71,7 +71,7 @@ public class TestSaleController {
 
     @Test
     @DisplayName("=== Crear una venta ===")
-    public void createTest() throws Exception {
+    void createTest() throws Exception {
         // Usa los IDs de los datos creados en el metodo setup.
         SaleDetailsDTO detailsDTO = new SaleDetailsDTO(testProduct.getId(), 10);
         SaleDTO saleDTO = new SaleDTO(null, testShop.getId(), LocalDate.now(), List.of(detailsDTO));
@@ -87,7 +87,7 @@ public class TestSaleController {
 
     @Test
     @DisplayName("=== Eliminar una venta ===")
-    public void deleteTest() throws Exception {
+    void deleteTest() throws Exception {
         Sale sale = saleRepository.save(new Sale(null, testShop, LocalDate.now(), null, true));
         mockMvc.perform(delete(URL_ENDPOINT + "/" + sale.getId()))
                 .andExpect(status().isNoContent());

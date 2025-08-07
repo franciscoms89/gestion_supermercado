@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.*;
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
-public class TestProductController {
+class TestProductController {
 
     @Autowired
     private MockMvc mockMvc;
@@ -39,7 +39,7 @@ public class TestProductController {
 
     @Test
     @DisplayName("=== Buscar todos los productos ===")
-    public void listAllTest() throws Exception {
+    void listAllTest() throws Exception {
         // Ruta a testear y qué esperamos del resultado
         mockMvc.perform(get(URL_ENDPOINT))
                 .andExpect(status().is(HttpStatus.OK.value()))
@@ -48,7 +48,7 @@ public class TestProductController {
 
     @Test
     @DisplayName("=== Crear un producto ===")
-    public void createTest() throws Exception {
+    void createTest() throws Exception {
         // Hacemos un POST de la ruta deseada y verificamos si los datos del objeto creado coinciden
         mockMvc.perform(post(URL_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -62,7 +62,7 @@ public class TestProductController {
 
     @Test
     @DisplayName("=== Actualizar un producto ===")
-    public void updateTest() throws Exception {
+    void updateTest() throws Exception {
         // Obtenemos un id de un producto existente o creamos un producto base si no hay
         Long id = getOrCreateProductId();
 
@@ -82,7 +82,7 @@ public class TestProductController {
 
     @Test
     @DisplayName("=== Eliminar un producto ===")
-    public void deleteTest() throws Exception {
+    void deleteTest() throws Exception {
         Long id = getOrCreateProductId();
 
         mockMvc.perform(delete(URL_ENDPOINT + "/" + id))

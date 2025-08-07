@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.*;
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
-public class TestShopController {
+class TestShopController {
 
     @Autowired
     private MockMvc mockMvc;
@@ -41,7 +41,7 @@ public class TestShopController {
 
     @Test
     @DisplayName("=== Listar todas las sucursales ===")
-    public void listAllTest() throws Exception {
+    void listAllTest() throws Exception {
         mockMvc.perform(get(URL_ENDPOINT))
                 .andExpect(status().is(HttpStatus.OK.value()))
                 .andExpect(jsonPath("$", hasSize(greaterThan(0))));
@@ -49,7 +49,7 @@ public class TestShopController {
 
     @Test
     @DisplayName("=== Crear una sucursal ===")
-    public void createTest() throws Exception {
+    void createTest() throws Exception {
         // Hacemos un POST de la ruta deseada y verificamos si los datos del objeto creado coinciden
         mockMvc.perform(post(URL_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -65,7 +65,7 @@ public class TestShopController {
 
     @Test
     @DisplayName("=== Actualizar una sucursal ===")
-    public void updateTest() throws Exception {
+    void updateTest() throws Exception {
         // Obtenemos un id de una surucsal existente o creamos una sucursal base si no hay
         Long id = getOrCreateShopId();
 
@@ -86,7 +86,7 @@ public class TestShopController {
 
     @Test
     @DisplayName("=== Eliminar una sucursal ===")
-    public void deleteTest() throws Exception {
+    void deleteTest() throws Exception {
         Long id = getOrCreateShopId();
 
         mockMvc.perform(delete(URL_ENDPOINT + "/" + id))

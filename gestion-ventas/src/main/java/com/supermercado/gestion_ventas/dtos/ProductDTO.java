@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductDTO {
 
-    // TODO: nombres visibles al cliente en español al estar los endPoints en español
+    // Nombres visibles al cliente en español al estar los endPoints en español
     @JsonProperty("productoId")
     private Long id;
     @JsonProperty("productoNombre")

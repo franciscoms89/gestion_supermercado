@@ -23,7 +23,7 @@ public class SaleController {
     @GetMapping("/ventas")
     public ResponseEntity<List<SaleDTO>> listAll(@RequestParam(name = "tiendaId", required = false) Long tiendaId,
                                                  @RequestParam(name = "fecha", required = false) LocalDate fechaOferta) {
-        // TODO [IMPORTANTE]: variables en español para hacer las búsquedas, ya que los endPoints están en español.
+        // [IMPORTANTE]: variables en español para hacer las búsquedas, ya que los endPoints están en español.
         List<SaleDTO> saleList = saleService.listAll(tiendaId, fechaOferta);
         return ResponseEntity.status(HttpStatus.OK).body(saleList);
     }

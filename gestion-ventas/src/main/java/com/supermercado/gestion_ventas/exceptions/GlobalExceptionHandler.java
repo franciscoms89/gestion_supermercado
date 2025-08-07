@@ -13,15 +13,19 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final String TIMESTAMP = "timestamp";
+    private static final String MESSAGE = "message";
+    private static final String PATH = "path";
+
     // Mensaje de error para producto no encontrado.
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<Object> handleProductNotFoundException(
             ProductNotFoundException ex, WebRequest request) {
 
         Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-        body.put("path", request.getDescription(false));
+        body.put(TIMESTAMP, LocalDateTime.now());
+        body.put(MESSAGE, ex.getMessage());
+        body.put(PATH, request.getDescription(false));
 
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
@@ -32,9 +36,9 @@ public class GlobalExceptionHandler {
             ShopNotFoundException ex, WebRequest request) {
 
         Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-        body.put("path", request.getDescription(false));
+        body.put(TIMESTAMP, LocalDateTime.now());
+        body.put(MESSAGE, ex.getMessage());
+        body.put(PATH, request.getDescription(false));
 
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
@@ -45,9 +49,9 @@ public class GlobalExceptionHandler {
             SaleNotFoundException ex, WebRequest request) {
 
         Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", ex.getMessage());
-        body.put("path", request.getDescription(false));
+        body.put(TIMESTAMP, LocalDateTime.now());
+        body.put(MESSAGE, ex.getMessage());
+        body.put(PATH, request.getDescription(false));
 
         return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
     }
@@ -58,9 +62,9 @@ public class GlobalExceptionHandler {
             RuntimeException ex, WebRequest request) {
 
         Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", "Ha ocurrido un error inesperado: " + ex.getMessage());
-        body.put("path", request.getDescription(false));
+        body.put(TIMESTAMP, LocalDateTime.now());
+        body.put(MESSAGE, "Ha ocurrido un error inesperado: " + ex.getMessage());
+        body.put(PATH, request.getDescription(false));
 
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }

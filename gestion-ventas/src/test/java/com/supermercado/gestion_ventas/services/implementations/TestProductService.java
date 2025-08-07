@@ -19,10 +19,10 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TestProductService {
+class TestProductService {
 
     @InjectMocks
     private ProductService service;
@@ -159,6 +159,8 @@ public class TestProductService {
         Long existingId = 20L;
         when(repositoryProduct.existsById(existingId)).thenReturn(true);
         service.delete(existingId);
+
+        verify(repositoryProduct, times(1)).deleteById(existingId);
     }
 
     @Test
