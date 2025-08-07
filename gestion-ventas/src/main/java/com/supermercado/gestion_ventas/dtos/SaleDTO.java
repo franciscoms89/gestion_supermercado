@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SaleDTO {
 
-    // TODO: nombres visibles al cliente en español al estar los endPoints en español
+    // Nombres visibles al cliente en español al estar los endPoints en español
     @JsonProperty("ventaId")
     private Long id;
     @JsonProperty("ventaTiendaId")
@@ -23,9 +23,8 @@ public class SaleDTO {
     @JsonProperty("ventaDetalles")
     private List<SaleDetailsDTO> saleDetails;
 
-    // TODO [IMPORTANTE]: Clase interna para los detalles de cada producto en la venta.
-    // Esto es crucial para poder enviar la 'cantidad' de cada producto.
-    // Corresponde a la información que se mapeará a la nueva entidad SaleProduct.
+    // Clase interna para los detalles de cada producto en la venta.
+    // Corresponde a la información que se mapeará en SaleProduct.
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

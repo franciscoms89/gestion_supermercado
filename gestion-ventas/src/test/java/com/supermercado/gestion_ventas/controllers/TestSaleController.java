@@ -3,10 +3,13 @@ package com.supermercado.gestion_ventas.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.supermercado.gestion_ventas.dtos.SaleDTO;
 import com.supermercado.gestion_ventas.dtos.SaleDTO.SaleDetailsDTO;
+import com.supermercado.gestion_ventas.models.Product;
 import com.supermercado.gestion_ventas.models.Sale;
 import com.supermercado.gestion_ventas.models.Shop;
 import com.supermercado.gestion_ventas.repositories.SaleRepositoryInterfaz;
 import com.supermercado.gestion_ventas.repositories.ShopRepositoryInterfaz;
+import com.supermercado.gestion_ventas.repositories.ProductRepositoryInterfaz;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -43,9 +46,20 @@ public class TestSaleController {
     @Autowired
     private ShopRepositoryInterfaz shopRepository;
 
+    @Autowired
+    private ProductRepositoryInterfaz productRepository;
+
     private final String URL_ENDPOINT = "/api/ventas";
-    private final SaleDetailsDTO detailsDTO = new SaleDetailsDTO(1L, 10);
-    private final SaleDTO saleDTO = new SaleDTO(null, 101L, LocalDate.now(), List.of(detailsDTO));
+    private Shop testShop;
+    private Product testProduct;
+
+
+    @BeforeEach
+    void setup() {
+        // Crea una tienda y un producto base para usar en los tests
+        testShop = shopRepository.save(new Shop(null, "Tienda de Prueba", "Ciudad Test", "Dirección Test", null));
+        testProduct = productRepository.save(new Product(null, "Producto de Prueba", 10.0, "Categoría Test", null));
+    }
 
     @Test
     @DisplayName("=== Listar todas las ventas ===")
@@ -58,41 +72,25 @@ public class TestSaleController {
     @Test
     @DisplayName("=== Crear una venta ===")
     public void createTest() throws Exception {
+        // Usa los IDs de los datos creados en el metodo setup.
+        SaleDetailsDTO detailsDTO = new SaleDetailsDTO(testProduct.getId(), 10);
+        SaleDTO saleDTO = new SaleDTO(null, testShop.getId(), LocalDate.now(), List.of(detailsDTO));
+
         mockMvc.perform(post(URL_ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(saleDTO)))
-                .andExpect(status().is(HttpStatus.CREATED.value()))
+                .andExpect(status().isCreated()) // Esperamos 201 Created
                 .andExpect(jsonPath("$.ventaId").isNumber())
-                .andExpect(jsonPath("$.ventaTiendaId").value(101L))
-                .andExpect(jsonPath("$.ventaDetalles[0].detallesProductoId").value(1L))
-                .andExpect(jsonPath("$.ventaDetalles[0].detallesCantidad").value(10));
+                .andExpect(jsonPath("$.ventaTiendaId").value(testShop.getId()))
+                .andExpect(jsonPath("$.ventaDetalles[0].detallesProductoId").value(testProduct.getId()));
     }
 
     @Test
     @DisplayName("=== Eliminar una venta ===")
     public void deleteTest() throws Exception {
-        Long saleId = getOrCreateSaleId();
-        mockMvc.perform(delete(URL_ENDPOINT + "/" + saleId))
+        Sale sale = saleRepository.save(new Sale(null, testShop, LocalDate.now(), null, true));
+        mockMvc.perform(delete(URL_ENDPOINT + "/" + sale.getId()))
                 .andExpect(status().isNoContent());
 
-    }
-
-    // Función auxiliar para obtener o crear una venta base y devolver su ID
-    private Long getOrCreateSaleId() {
-        var all = saleRepository.findAll();
-        if (all.isEmpty()) {
-            Shop shop = shopRepository.findAll().stream().findFirst().orElseGet(() -> {
-                Shop newShop = new Shop();
-                newShop.setName("Sucursal Base");  // pon aquí los datos mínimos que requieras
-                return shopRepository.save(newShop);
-            });
-            Sale newSale = new Sale();
-            newSale.setShop(shop);
-            newSale.setSaleDate(LocalDate.now());
-            newSale.setSaleProducts(new HashSet<>());
-            return saleRepository.save(newSale).getId();
-        } else {
-            return all.get(0).getId();
-        }
     }
 }
