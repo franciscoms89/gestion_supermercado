@@ -39,9 +39,9 @@ public class ProductService implements ProductInterfaz {
     @Override
     public ProductDTO productTopSelling() {       //producto más vendido
         List<SaleProduct> product = repositorySaleProduct.findAll();
-        Optional <SaleProduct> saleProductTop = product.stream()
+        Optional<SaleProduct> saleProductTop = product.stream()
                 .max(Comparator.comparing(SaleProduct::getQuantity));
-        if (saleProductTop.isEmpty()){
+        if (saleProductTop.isEmpty()) {
             throw new ProductNotFoundException("INFO: No hay ventas registradas.");
         }
         Product productTop = saleProductTop.get().getProduct();
@@ -58,7 +58,7 @@ public class ProductService implements ProductInterfaz {
             Product productSave = repositoryProduct.save(productRecover);
             System.out.println("INFO: Producto creado con éxito con ID: " + productSave.getId());
             return this.convertToDTO(productSave);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.err.println("ERROR: Error al intentar registrar el producto '" + p.getName() + "'. Causa: " + e.getMessage());
             throw new RuntimeException("Error inesperado al registrar el producto.");
         }
@@ -79,7 +79,7 @@ public class ProductService implements ProductInterfaz {
         // 3. Guardar el producto actualizado
         Product updateProduct = repositoryProduct.save(existingProduct);
         System.out.println("INFO: Producto con ID " + updateProduct.getId() + " actualizado correctamente.");
-        return convertToDTO (updateProduct);
+        return convertToDTO(updateProduct);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class ProductService implements ProductInterfaz {
         try {
             repositoryProduct.deleteById(id);
             System.out.println("INFO: Producto con ID " + id + " eliminado correctamente.");
-        }catch (Exception e){
+        } catch (Exception e) {
             System.err.println("ERROR: Error al intentar eliminar el producto con ID: " + id + ". Causa: " + e.getMessage());
             throw new RuntimeException("Error inesperado al eliminar el producto.");
         }

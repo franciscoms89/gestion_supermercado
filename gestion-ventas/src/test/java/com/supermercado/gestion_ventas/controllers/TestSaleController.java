@@ -91,6 +91,5 @@ public class TestSaleController {
         Sale sale = saleRepository.save(new Sale(null, testShop, LocalDate.now(), null, true));
         mockMvc.perform(delete(URL_ENDPOINT + "/" + sale.getId()))
                 .andExpect(status().isNoContent());
-
     }
 }

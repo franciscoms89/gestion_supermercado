@@ -1,4 +1,5 @@
 package com.supermercado.gestion_ventas.models;
+
 import com.supermercado.gestion_ventas.models.keys.SaleProduct;
 import jakarta.persistence.*;
 import lombok.*;

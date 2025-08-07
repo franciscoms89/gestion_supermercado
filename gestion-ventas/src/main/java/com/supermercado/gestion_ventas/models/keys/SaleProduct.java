@@ -44,10 +44,10 @@ public class SaleProduct implements Serializable {
         }
     }
 
-    public SaleProduct(Sale sale, Product product, Integer quantity){
-            this.sale = sale;
-            this.product = product;
-            this.quantity = quantity;
-            this.id = new SaleProductId(sale.getId(), product.getId());
-        }
+    public SaleProduct(Sale sale, Product product, Integer quantity) {
+        this.sale = sale;
+        this.product = product;
+        this.quantity = quantity;
+        this.id = new SaleProductId(sale.getId(), product.getId());
     }
+}
