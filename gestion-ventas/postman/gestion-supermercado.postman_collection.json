@@ -1,10 +1,9 @@
 {
 	"info": {
-		"_postman_id": "88b3df26-cc9c-44ea-a036-d4372f2acbfc",
+		"_postman_id": "d2f205ff-f270-42d1-b4d8-95fdd2a3331a",
 		"name": "gestion-supermercado",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "45744583",
-		"_collection_link": "https://iagorivas.postman.co/workspace/fe6b0806-457a-4f35-8d81-1073dc5d360d/collection/45744583-88b3df26-cc9c-44ea-a036-d4372f2acbfc?action=share&source=collection_link&creator=45744583"
+		"_exporter_id": "45744559"
 	},
 	"item": [
 		{
@@ -34,7 +33,22 @@
 					"name": "Crear un nuevo producto",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productoNombre\": \"\",\r\n    \"productoPrecio\": 0.0,\r\n    \"productoCategoria\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:8080/api/productos",
 							"protocol": "http",
@@ -54,7 +68,22 @@
 					"name": "Actualizar un producto existente",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productoNombre\": \"\",\r\n    \"productoPrecio\": 0.0,\r\n    \"productoCategoria\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:8080/api/productos/1",
 							"protocol": "http",
@@ -96,7 +125,20 @@
 					"name": "Producto mas vendido",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/estadisticas/producto-mas-vendido",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"estadisticas",
+								"producto-mas-vendido"
+							]
+						}
 					},
 					"response": []
 				}
@@ -139,7 +181,22 @@
 					"name": "Crear una nueva venta",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"ventaTiendaId\": 0,\r\n  \"ventaFecha\": \"AAAA-MM-DD\",\r\n  \"ventaDetalles\": [\r\n    {\r\n      \"detallesProductoId\": 0,\r\n      \"detallesCantidad\": 0\r\n    },\r\n    {\r\n      \"detallesProductoId\": 0,\r\n      \"detallesCantidad\": 0\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:8080/api/ventas",
 							"protocol": "http",
@@ -205,7 +262,22 @@
 					"name": "Crear una nueva sucursal",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tiendaNombre\": \"\",\r\n    \"tiendaCiudad\": \"\",\r\n    \"tiendaDireccion\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:8080/api/sucursales",
 							"protocol": "http",
@@ -225,7 +297,22 @@
 					"name": "Actualizar una sucursal existente",
 					"request": {
 						"method": "PUT",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tiendaNombre\": \"\",\r\n    \"tiendaCiudad\": \"\",\r\n    \"tiendaDireccion\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:8080/api/sucursales/1",
 							"protocol": "http",
